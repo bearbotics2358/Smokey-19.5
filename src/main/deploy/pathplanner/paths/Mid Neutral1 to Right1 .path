@@ -1,0 +1,114 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.687378472222221,
+        "y": 4.050746527777778
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.451180555555556,
+        "y": 3.105954861111112
+      },
+      "isLocked": false,
+      "linkedName": "Mid Neutral1"
+    },
+    {
+      "anchor": {
+        "x": 4.679791666666667,
+        "y": 0.5865104166666675
+      },
+      "prevControl": {
+        "x": 6.54258555852922,
+        "y": 0.7902534985891344
+      },
+      "nextControl": {
+        "x": 2.664236111111111,
+        "y": 0.36605902777777843
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.162952924393723,
+        "y": 1.2079029957203988
+      },
+      "prevControl": {
+        "x": 2.9161805555555556,
+        "y": 0.6809895833333336
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Right1"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.6796657381615595,
+      "constraints": {
+        "maxVelocity": 1.2,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 7.0,
+        "y": 0.7
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 0.8077994428969383,
+      "maxWaypointRelativePos": 1.253481894150418,
+      "name": "Point Towards Zone"
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "Run Intake",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.6406685236768812,
+      "command": null
+    },
+    {
+      "name": "",
+      "waypointRelativePos": 1.3704735376044548,
+      "endWaypointRelativePos": 2.0,
+      "command": null
+    },
+    {
+      "name": "Squeeze Hopper",
+      "waypointRelativePos": 1.5208913649025066,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "Path Parts",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -125.72739822279975
+  },
+  "useDefaultConstraints": true
+}

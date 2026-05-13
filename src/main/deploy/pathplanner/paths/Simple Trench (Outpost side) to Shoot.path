@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.7941755634638206,
+        "y": 0.6189561091340454
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.309406880189799,
+        "y": 0.7911032028469753
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.2771293001186246,
+        "y": 1.834744958481613
+      },
+      "prevControl": {
+        "x": 2.492313167259788,
+        "y": 0.328457888493475
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Simple Trench (Outpost side) Hub"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 1.5,
+    "maxAcceleration": 1.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -141.70983680775686
+  },
+  "reversed": false,
+  "folder": "Path Parts",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": false
+}

@@ -1,0 +1,124 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.2313694721825963,
+        "y": 6.0081455064194005
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.1288541666666667,
+        "y": 7.168559027777778
+      },
+      "isLocked": false,
+      "linkedName": "Depot"
+    },
+    {
+      "anchor": {
+        "x": 4.805763888888889,
+        "y": 7.43625
+      },
+      "prevControl": {
+        "x": 3.972596335533171,
+        "y": 7.45121708179681
+      },
+      "nextControl": {
+        "x": 7.435434027777777,
+        "y": 7.389010416666666
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.585121527777777,
+        "y": 3.987760416666667
+      },
+      "prevControl": {
+        "x": 6.742586805555556,
+        "y": 5.578159722222224
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Mid Neutral2"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.593908629441624,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 1.2,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 3.0,
+        "y": 7.25
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 0.5515320334261847,
+      "maxWaypointRelativePos": 1.157360406091371,
+      "name": "Point Towards Zone"
+    },
+    {
+      "fieldPosition": {
+        "x": 5.0,
+        "y": 1.0
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 1.2639593908629432,
+      "maxWaypointRelativePos": 2.0,
+      "name": "Point Towards Zone"
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": 0.5905292479108651,
+      "command": null
+    },
+    {
+      "name": "Run Intake",
+      "waypointRelativePos": 1.28426395939086,
+      "endWaypointRelativePos": 2.0,
+      "command": null
+    },
+    {
+      "name": "Extend Hopper",
+      "waypointRelativePos": 1.2842639593908605,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -151.18920625702685
+  },
+  "reversed": false,
+  "folder": "Path Parts",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}

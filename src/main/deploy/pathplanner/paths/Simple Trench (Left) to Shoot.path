@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.6650652431791224,
+        "y": 7.397247924080664
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.3847212336892056,
+        "y": 7.41876631079478
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.4492763938315547,
+        "y": 5.686536180308422
+      },
+      "prevControl": {
+        "x": 2.2986476868327412,
+        "y": 6.536512455516014
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Simple Trench (Left side) Hub"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 1.5,
+    "maxAcceleration": 1.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 139.84400037508058
+  },
+  "reversed": false,
+  "folder": "Path Parts",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": false
+}

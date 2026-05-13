@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Simple"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Squeeze Hopper"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Launch Fuel at Hub"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Simple Preload",
+  "choreoAuto": false
+}
