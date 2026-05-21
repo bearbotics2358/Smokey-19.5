@@ -3,15 +3,9 @@
   "robotLength": 0.84,
   "holonomicMode": true,
   "pathFolders": [
-    "Full Paths",
-    "Path Parts"
+    "Left"
   ],
-  "autoFolders": [
-    "Feeding",
-    "Single Cycles",
-    "Simple Preload",
-    "Single Cycles With Preload"
-  ],
+  "autoFolders": [],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,

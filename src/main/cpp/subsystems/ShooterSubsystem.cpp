@@ -174,7 +174,7 @@ void ShooterSubsystem::SetGoals(units::revolutions_per_minute_t speed, units::de
     // m_HoodMotor.SetControl(m_HoodPositionVoltage.WithPosition(GetTurnsFromAngle(hoodAngle + m_HoodOffset)));
 }
 
-units::revolutions_per_minute_t ShooterSubsystem::GetCurrentShooterSpeed() {
+units::revolutions_per_minute_t ShooterSubsy stem::GetCurrentShooterSpeed() {
     units::revolutions_per_minute_t speed = m_FlywheelMotor.GetVelocity().GetValue();
     return speed;
 };
