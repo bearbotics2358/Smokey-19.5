@@ -12,10 +12,7 @@
 class LaunchHelper {
 public:
     static LaunchHelper& GetInstance();
-    void Init(std::function<units::degree_t()> hoodAngleSupplier,
-              std::function<units::revolutions_per_minute_t()> shooterSpeedSupplier,
-              std::function<units::degree_t()> turretAngleSupplier,
-              std::function<frc::ChassisSpeeds()> robotSpeedsSupplier,
+    void Init(std::function<frc::ChassisSpeeds()> robotSpeedsSupplier,
               std::function<frc::Pose2d()> robotPoseSupplier);
 
     TrajectoryInfo GetLaunchParameters();
@@ -45,9 +42,10 @@ private:
     static constexpr units::millisecond_t kCacheTimeout = 20_ms;
     units::second_t m_LastCacheTime = 0_s;
 
-    std::function<units::degree_t()> m_GetHoodAngle;
-    std::function<units::revolutions_per_minute_t()> m_GetShooterSpeed;
-    std::function<units::degree_t()> m_GetTurretAngle;
     std::function<frc::ChassisSpeeds()> m_RobotSpeedsSupplier;
     std::function<frc::Pose2d()> m_RobotPoseSupplier;
+
+    static constexpr units::angle::degree_t kHoodAngle = 60_deg;
+    static constexpr units::angular_velocity::revolutions_per_minute_t kDrumSpeed = 100_rpm; //@todo: when Shooter class is created, swap this out with an updating drum speed
+    static constexpr units::angle::degree_t kTurretAngle = 0_deg;
 };

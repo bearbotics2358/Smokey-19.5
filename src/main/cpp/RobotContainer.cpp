@@ -127,7 +127,7 @@ void RobotContainer::ConfigureBindings()
 
     operatorJoystick.POVUp().WhileTrue(m_FMSSubsystem.ManualShift("Red"));
     operatorJoystick.POVDown().WhileTrue(m_FMSSubsystem.ManualShift("Blue"));
-    
+
     driverJoystick.POVLeft().WhileTrue(m_driveManager.DriveAlongWall());
 }
 

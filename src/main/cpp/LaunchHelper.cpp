@@ -21,14 +21,8 @@ LaunchHelper::LaunchHelper()
 {
 }
 
-void LaunchHelper::Init(std::function<units::degree_t()> hoodAngleSupplier,
-                        std::function<units::revolutions_per_minute_t()> shooterSpeedSupplier,
-                        std::function<units::degree_t()> turretAngleSupplier,
-                        std::function<frc::ChassisSpeeds()> robotSpeedsSupplier,
+void LaunchHelper::Init(std::function<frc::ChassisSpeeds()> robotSpeedsSupplier,
                         std::function<frc::Pose2d()> robotPoseSupplier) {
-    m_GetHoodAngle = hoodAngleSupplier;
-    m_GetShooterSpeed = shooterSpeedSupplier;
-    m_GetTurretAngle = turretAngleSupplier;
     m_RobotSpeedsSupplier = robotSpeedsSupplier;
     m_RobotPoseSupplier = robotPoseSupplier;
 
@@ -56,9 +50,9 @@ TrajectoryInfo LaunchHelper::GetLaunchParameters() {
 
     m_LastCacheTime = timestamp;
 
-    inputs.elevation_angle = m_GetHoodAngle();
-    inputs.wheel_rpm = m_GetShooterSpeed();
-    inputs.turret_angle = m_GetTurretAngle();
+    inputs.elevation_angle = kHoodAngle;
+    inputs.wheel_rpm = kDrumSpeed;
+    inputs.turret_angle =kTurretAngle;
 
     frc::Translation2d hub_center = FieldConstants::GetHubCenterForMyAlliance();
     units::meter_t distance_to_hub_center = units::math::abs(m_RobotPoseSupplier().Translation().Distance(hub_center));
@@ -75,9 +69,9 @@ TrajectoryInfo LaunchHelper::GetLaunchParameters() {
 
     // m_Cache.wheel_rpm += (1500_rpm * units::foot_t(distance_to_hub_center).value
 
-    BearLog::Log("LaunchHelper/Hood Angle", m_Cache.elevation_angle);
-    BearLog::Log("LaunchHelper/Wheel RPM", m_Cache.wheel_rpm);
-    BearLog::Log("LaunchHelper/Turret Angle", m_Cache.turret_angle);
+    // BearLog::Log("LaunchHelper/Hood Angle", m_Cache.elevation_angle);
+    // BearLog::Log("LaunchHelper/Wheel RPM", m_Cache.wheel_rpm);
+    // BearLog::Log("LaunchHelper/Turret Angle", m_Cache.turret_angle);
 
     if (frc::RobotBase::IsSimulation()) {
         DrawTrajectory();
@@ -87,8 +81,8 @@ TrajectoryInfo LaunchHelper::GetLaunchParameters() {
 
 void LaunchHelper::DrawTrajectory()
 {
-        units::meters_per_second_t velocity = RPMToVelocity(m_GetShooterSpeed());
-        units::degree_t angle = m_GetHoodAngle();
+        units::meters_per_second_t velocity = RPMToVelocity(kDrumSpeed);
+        units::degree_t angle = kHoodAngle;
         units::meters_per_second_squared_t gravity = 9.81_mps_sq;
         std::vector<frc::Pose3d> poses;
         double timeBetweenPoses = 0.05;
@@ -146,7 +140,7 @@ void LaunchHelper::DrawTrajectory()
             };
 
             frc::Translation3d rotated = localPose.RotateBy(
-            frc::Rotation3d{0_deg, 0_deg, botPose2d.Rotation().Degrees() + m_GetTurretAngle()});
+            frc::Rotation3d{0_deg, 0_deg, botPose2d.Rotation().Degrees() + kTurretAngle});
 
             frc::Pose3d worldPose{
                 robotPose3d.X() + rotated.X(),
