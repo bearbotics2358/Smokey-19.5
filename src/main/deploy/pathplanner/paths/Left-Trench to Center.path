@@ -59,11 +59,11 @@
     },
     {
       "fieldPosition": {
-        "x": 8.4,
-        "y": 7.0
+        "x": 9.0,
+        "y": 9.0
       },
       "rotationOffset": 0.0,
-      "minWaypointRelativePos": 1.3481894150417797,
+      "minWaypointRelativePos": 1.6378830083565417,
       "maxWaypointRelativePos": 1.8774373259052943,
       "name": "Point Towards Zone"
     }

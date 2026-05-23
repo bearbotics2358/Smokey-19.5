@@ -19,19 +19,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left-Launch to Close To Hub"
+            "pathName": "Left-Launch to Center"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left-Spiral Sweep"
+            "pathName": "Left-Center to Hub"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left-Launch to Close To Hub"
+            "pathName": "Left-Hub to Launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left-Launch to Center"
           }
         }
       ]

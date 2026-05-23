@@ -3,61 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.545659722222222,
-        "y": 4.475902777777779
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 6.159965277778053,
-        "y": 6.97960069444613
-      },
-      "isLocked": false,
-      "linkedName": "Left Center"
-    },
-    {
-      "anchor": {
-        "x": 5.388385416666941,
-        "y": 7.294531250001686
-      },
-      "prevControl": {
-        "x": 5.719062500000292,
-        "y": 7.287642144099014
-      },
-      "nextControl": {
-        "x": 5.057708333333591,
-        "y": 7.301420355904359
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 4.301875000000274,
-        "y": 7.294531250001686
-      },
-      "prevControl": {
-        "x": 4.551875000000274,
-        "y": 7.294531250001686
-      },
-      "nextControl": {
-        "x": 4.051875000000274,
-        "y": 7.294531250001686
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
         "x": 3.9082118055558297,
         "y": 7.294531250001686
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.553819444444445,
+        "y": 7.35751736111111
+      },
+      "isLocked": false,
+      "linkedName": "Left Launch1"
+    },
+    {
+      "anchor": {
+        "x": 5.482864583333333,
+        "y": 7.294531250001686
+      },
       "prevControl": {
-        "x": 4.711284722222497,
-        "y": 7.278784722223907
+        "x": 4.994722222222222,
+        "y": 7.404756944444444
+      },
+      "nextControl": {
+        "x": 6.213921800736987,
+        "y": 7.12945381381629
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.545659722222222,
+        "y": 4.475902777777779
+      },
+      "prevControl": {
+        "x": 7.435434027777777,
+        "y": 5.530920138888889
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Left Launch1"
+      "linkedName": "Left Center"
     }
   ],
   "rotationTargets": [],
@@ -65,22 +49,22 @@
   "pointTowardsZones": [
     {
       "fieldPosition": {
-        "x": 4.62,
-        "y": 4.02
+        "x": 5.0,
+        "y": -20.0
       },
       "rotationOffset": 0.0,
-      "minWaypointRelativePos": 2.949860724233982,
-      "maxWaypointRelativePos": 3.0,
+      "minWaypointRelativePos": 0.12256267409470752,
+      "maxWaypointRelativePos": 1.0027855153203353,
       "name": "Point Towards Zone"
     },
     {
       "fieldPosition": {
-        "x": 5.0,
-        "y": -999999999999999.0
+        "x": 6.0,
+        "y": 12.0
       },
       "rotationOffset": 0.0,
-      "minWaypointRelativePos": 1.1866295264623965,
-      "maxWaypointRelativePos": 1.7715877437325873,
+      "minWaypointRelativePos": 1.2701949860724229,
+      "maxWaypointRelativePos": 1.3983286908078008,
       "name": "Point Towards Zone"
     }
   ],
@@ -95,13 +79,13 @@
   },
   "goalEndState": {
     "velocity": 2.0,
-    "rotation": -77.32613999438772
+    "rotation": 69.44395478041649
   },
   "reversed": false,
   "folder": "Left",
   "idealStartingState": {
     "velocity": 2.0,
-    "rotation": 69.44395478041649
+    "rotation": -77.32613999438772
   },
   "useDefaultConstraints": true
 }

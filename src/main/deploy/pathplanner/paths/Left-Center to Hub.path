@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.545659722222222,
+        "y": 4.475902777777779
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.774079861111111,
+        "y": 4.523142361111112
+      },
+      "isLocked": false,
+      "linkedName": "Left Center"
+    },
+    {
+      "anchor": {
+        "x": 5.687569444444445,
+        "y": 4.6806076388888895
+      },
+      "prevControl": {
+        "x": 6.632361111111111,
+        "y": 4.507395833333334
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Left Close to Hub 2"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 2.0,
+    "rotation": -88.86930904876206
+  },
+  "reversed": false,
+  "folder": "Left",
+  "idealStartingState": {
+    "velocity": 2.0,
+    "rotation": 69.44395478041649
+  },
+  "useDefaultConstraints": true
+}
