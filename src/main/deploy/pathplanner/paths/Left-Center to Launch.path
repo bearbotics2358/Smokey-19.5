@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.876336805555555,
-        "y": 4.523142361111112
+        "x": 7.545659722222222,
+        "y": 4.475902777777779
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.797604166666666,
-        "y": 5.483680555555557
+        "x": 7.466927083333333,
+        "y": 5.436440972222224
       },
       "isLocked": false,
       "linkedName": "Left Center"
@@ -49,8 +49,8 @@
   "pointTowardsZones": [
     {
       "fieldPosition": {
-        "x": 8.0,
-        "y": 7.2
+        "x": 3.0,
+        "y": 7.3
       },
       "rotationOffset": 0.0,
       "minWaypointRelativePos": 0.8412256267409474,
@@ -85,7 +85,7 @@
   "folder": "Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -111.80140948635173
+    "rotation": 69.44395478041649
   },
   "useDefaultConstraints": true
 }
