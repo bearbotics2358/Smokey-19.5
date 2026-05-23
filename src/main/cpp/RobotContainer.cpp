@@ -19,22 +19,12 @@
 #include "subsystems/RobotZoneHelper.h"
 
 RobotContainer::RobotContainer()
-    : m_turretSubsystem{[this] { return m_drivetrain.GetState().Pose; }},
-      m_driveManager{[this] { return m_drivetrain.GetState().Pose; }}
+    : m_driveManager{[this] { return m_drivetrain.GetState().Pose; }}
 {
     // The LaunchHelper needs to be initialized when the robot code is booting up before any other calls to
     // LaunchHelper are made
     LaunchHelper::GetInstance().Init(
-        // Shooter/hood angle supplier
-        [this] { return m_shooterSubsystem.GetCurrentHoodAngle(); },
-
-        // Shooter speed supplier
-        [this] { return m_shooterSubsystem.GetCurrentShooterSpeed(); },
-
-        // Turret angle supplier
-        [this] { return m_turretSubsystem.CurrentAngle(); },
-
-        // Robot speed supplier
+    // Robot speed supplier
         [this] { return m_drivetrain.GetState().Speeds; },
 
         // Robot pose supplier
@@ -107,18 +97,11 @@ void RobotContainer::ConfigureBindings()
     driverJoystick.Y().OnTrue(m_intakeSubsystem.RunIntakeInReverse());
     driverJoystick.Y().OnFalse(m_intakeSubsystem.StopIntake());
 
-    driverJoystick.POVUp().OnTrue(m_indexerSubsystem.RunIndexerInReverse());
-    driverJoystick.POVUp().OnFalse(m_indexerSubsystem.Stop());
-
     operatorJoystick.X().OnTrue(m_hopperSubsystem.ExtendHopper());
     operatorJoystick.X().OnFalse(m_hopperSubsystem.StopHopper());
     operatorJoystick.B().OnTrue(m_hopperSubsystem.StowHopper());
     operatorJoystick.B().OnFalse(m_hopperSubsystem.StopHopper());
 
-    operatorJoystick.POVLeft().OnTrue(m_turretSubsystem.NudgeOffsetUp());
-    operatorJoystick.POVRight().OnTrue(m_turretSubsystem.NudgeOffsetDown());
-
-    operatorJoystick.RightTrigger().WhileTrue(m_hopperSubsystem.AgitateToHelpIndexer());
     operatorJoystick.RightTrigger().OnFalse(m_hopperSubsystem.StopHopper());
 
     operatorJoystick.LeftTrigger().OnFalse(m_intakeSubsystem.StopIntake());
@@ -129,44 +112,6 @@ void RobotContainer::ConfigureBindings()
 
     driverJoystick.LeftTrigger().OnFalse(m_intakeSubsystem.StopIntake());
     driverJoystick.LeftTrigger().OnTrue(m_intakeSubsystem.RunIntake());
-
-    driverJoystick.RightBumper().OnTrue(
-        frc2::cmd::Sequence(
-            frc2::cmd::Either(
-                m_shooterSubsystem.EnableShooterWithFixedHoodAngle().WithTimeout(0.05_s),
-                m_shooterSubsystem.EnableShooterWithFixedHoodAndFixedSpeed().WithTimeout(0.05_s),
-                [this] {return RobotZoneHelper::isRobotInMyAllianceZone(m_drivetrain.GetState().Pose);}
-            ),
-            m_indexerSubsystem.RunIndexerForLaunching().WithTimeout(0.05_s)
-        ).AndThen(
-            frc2::cmd::Parallel(
-                frc2::cmd::Either(
-                    m_shooterSubsystem.EnableShooterWithFixedHoodAngle(),
-                    m_shooterSubsystem.EnableShooterWithFixedHoodAndFixedSpeed(),
-                    [this] {return RobotZoneHelper::isRobotInMyAllianceZone(m_drivetrain.GetState().Pose);}
-                ),
-                m_indexerSubsystem.RunIndexerForLaunching())
-        )).OnFalse(
-        frc2::cmd::Parallel(
-            m_shooterSubsystem.StopShooter(),
-            m_indexerSubsystem.Stop()
-        )
-    );
-
-    driverJoystick.RightTrigger().WhileTrue(
-        frc2::cmd::Sequence(
-            m_shooterSubsystem.EnableShooterWithFixedHoodAndFixedSpeed().WithTimeout(0.05_s),
-            m_indexerSubsystem.RunIndexerForLaunching().WithTimeout(0.05_s)
-        ).AndThen(
-            frc2::cmd::Parallel(
-                m_shooterSubsystem.EnableShooterWithFixedHoodAndFixedSpeed(),
-                m_indexerSubsystem.RunIndexerForLaunching())
-        )).OnFalse(
-        frc2::cmd::Parallel(
-            m_shooterSubsystem.StopShooter(),
-            m_indexerSubsystem.Stop()
-        )
-    );
 
     // Run SysId routines when holding back/start and X/Y.
     // Note that each routine should be run exactly once in a single log.
@@ -180,13 +125,9 @@ void RobotContainer::ConfigureBindings()
 
     m_drivetrain.RegisterTelemetry([this](auto const &state) { logger.Telemeterize(state); });
 
-    operatorJoystick.Y().OnTrue(m_turretSubsystem.ZeroTurret());
     operatorJoystick.POVUp().WhileTrue(m_FMSSubsystem.ManualShift("Red"));
     operatorJoystick.POVDown().WhileTrue(m_FMSSubsystem.ManualShift("Blue"));
-    operatorJoystick.A().OnTrue(m_turretSubsystem.PointAtHub());
-
-    //Don't use until tested
-    //operatorJoystick.B().OnTrue(m_shooterSubsystem.CalibrateHoodMotor());
+    
     driverJoystick.POVLeft().WhileTrue(m_driveManager.DriveAlongWall());
 }
 
@@ -203,45 +144,12 @@ void RobotContainer::ConfigurePathPlanner() {
         std::move(m_hopperSubsystem.ExtendHopper().WithTimeout(1_s))
     );
     NamedCommands::registerCommand(
-        "Squeeze Hopper",
-        std::move(m_hopperSubsystem.AgitateToHelpIndexer().WithTimeout(kLaunchTime))
-    );
-    NamedCommands::registerCommand(
         "Run Intake",
         std::move(m_intakeSubsystem.RunIntake())
     );
     NamedCommands::registerCommand(
         "Stop Intake",
         std::move(m_intakeSubsystem.StopIntake())
-    );
-    NamedCommands::registerCommand(
-        "Stop Shooter",
-        std::move(m_shooterSubsystem.StopShooter())
-    );
-    NamedCommands::registerCommand(
-        "Point Turret at Hub",
-        std::move(m_turretSubsystem.PointAtHub())
-    );
-    NamedCommands::registerCommand(
-        "Launch Fuel at Hub",
-        std::move(
-            frc2::cmd::Parallel(
-                m_shooterSubsystem.EnableShooterWithFixedHoodAngle(),
-                m_indexerSubsystem.RunIndexerForLaunching()
-            ).WithTimeout(kLaunchTime)
-        )
-    );
-    NamedCommands::registerCommand(
-        "Run Indexer",
-        std::move(
-            m_indexerSubsystem.RunIndexerForLaunching()
-        )
-    );
-    NamedCommands::registerCommand(
-        "Stop Indexer",
-        std::move(
-            m_indexerSubsystem.Stop()
-        )
     );
     NamedCommands::registerCommand(
         "Empty Hopper",

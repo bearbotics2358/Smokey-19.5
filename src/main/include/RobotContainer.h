@@ -11,14 +11,10 @@
 #include "subsystems/CommandSwerveDrivetrain.h"
 #include "Telemetry.h"
 #include "Config.h"
-#include "subsystems/CameraSubsystem.h"
-#include "subsystems/TurretSubsystem.h"
 #include "subsystems/IntakeSubsystem.h"
 #include "subsystems/HopperSubsystem.h"
-#include "subsystems/IndexerSubsystem.h"
 #include "vision/VisionConstants.h"
 #include "vision/VisionSubsystem.h"
-#include "subsystems/ShooterSubsystem.h"
 #include "subsystems/FMSSubsystem.h"
 #include "subsystems/DriveManager.h"
 
@@ -46,11 +42,8 @@ private:
     frc2::CommandXboxController driverJoystick{0};
     frc2::CommandXboxController operatorJoystick{1};
 
-    TurretSubsystem m_turretSubsystem;
-    ShooterSubsystem m_shooterSubsystem;
     IntakeSubsystem m_intakeSubsystem;
     HopperSubsystem m_hopperSubsystem;
-    IndexerSubsystem m_indexerSubsystem;
     FMSSubsystem m_FMSSubsystem;
     DriveManager m_driveManager;
 
