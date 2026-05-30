@@ -18,19 +18,25 @@ using namespace ctre::phoenix6;
 
 class ShooterSubsystem : public frc2::SubsystemBase {
 public:
+  enum class EnableFeeder {No, Yes};
+
   ShooterSubsystem();
   units::revolutions_per_minute_t GetDrumSpeed();
-  units::revolutions_per_minute_t CalculateFeederSpeed(); //as conveyor belts move up, speed up the feeders
-  void SetGoals(units::revolutions_per_minute_t speed);
+  units::revolutions_per_minute_t GetFeederSpeed(); //as conveyor belts move up, speed up the feeders
+  void SetGoalSpeeds(units::revolutions_per_minute_t speed);
   void Periodic() override;
   void SimulationPeriodic() override;
-  frc2::CommandPtr EnableShooter();
-  frc2::CommandPtr DisableShooter();
-  frc2::CommandPtr EnableDrum();//for spinning up
-  frc2::CommandPtr SlowDrum(); //drum should not need to completely stop while robot is enabled
+  frc2::CommandPtr RunDrumAndFeeder();
+  frc2::CommandPtr DisableDrumAndFeeder();
+  frc2::CommandPtr RunDrumOnly();//for spinning up
+
 private:
   void ConfigureDrumMotors();
   void ConfigureFeederMotors();
+
+  void StopDrumMotors();
+  void StopFeederMotors();
+  void SetGoalSpeeds(units::revolutions_per_minute_t drumSpeed, EnableFeeder enableFeeder);
 
   static constexpr int kDrumAMotorId = 1;//@todo: change to actual motor IDs
   static constexpr int kDrumBMotorId = 2;
