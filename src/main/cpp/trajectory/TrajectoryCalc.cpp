@@ -180,9 +180,15 @@ TrajectoryInfo TrajectoryCalc::compute_trajectory(TrajectoryInfo inputs)
 		// The advantage is this is always coming from this code so that assumption is fairly valid
 		// An alternative is to back out from the calculations what was the condition last time and update to current distance
 
+		// Alternatively, for fixed angle shooting, use the provided angle
+
 		// Find a combination of hood angle and wheel speed that would work for a stationary shot from this distance
-		inputs.elevation_angle = ELEVATION_ANGLE_MID;
-		elevation = ELEVATION_ANGLE_MID;
+		if(m_constant_shooter_elevation_enabled) {
+			elevation = inputs.elevation_angle;
+		} else {
+			inputs.elevation_angle = ELEVATION_ANGLE_MID;
+			elevation = ELEVATION_ANGLE_MID;
+		}
 		theta_index = (int)elevation.value();
 		inputs = find_best_launch_speed(inputs, theta_index);
 		v_launch_index = wheel_rpm_to_v_launch_index(inputs.wheel_rpm);

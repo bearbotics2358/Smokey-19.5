@@ -28,8 +28,8 @@ void LaunchHelper::Init(std::function<frc::ChassisSpeeds()> robotSpeedsSupplier,
 
     m_TrajectoryCalc.init();
     m_TrajectoryCalc.set_constant_shooter_elevation(true);
-
-    m_TrajectoryCalc.set_ball_compression(0.422);
+    m_TrajectoryCalc.set_shoot_on_the_move_enabled(false);
+    m_TrajectoryCalc.set_ball_compression(1.0);
 
     m_Initialized = true;
 }
