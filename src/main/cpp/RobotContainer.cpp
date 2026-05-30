@@ -157,28 +157,4 @@ void RobotContainer::ConfigurePathPlanner() {
             m_intakeSubsystem.RunIntakeInReverse()
         )
     );
-
-    pathplanner::RobotConfig config = pathplanner::RobotConfig::fromGUISettings();
-
-    pathplanner::AutoBuilder::configure(
-        [this]() { return m_drivetrain.GetState().Pose; },
-        [this](frc::Pose2d pose) { m_drivetrain.ResetPose(pose); },
-        [this]() { return m_drivetrain.GetState().Speeds; },
-        [this](frc::ChassisSpeeds speeds) {
-            m_drivetrain.SetControl(
-                drive.WithVelocityX(speeds.vx)
-                    .WithVelocityY(speeds.vy)
-                    .WithRotationalRate(speeds.omega)
-            );
-        },
-
-        std::make_shared<pathplanner::PPHolonomicDriveController>(
-            pathplanner::PIDConstants(5.0, 0.0, 0.0),
-            pathplanner::PIDConstants(5.0, 0.0, 0.0)
-        ),
-
-        config,
-        []() { return true; },
-        &m_drivetrain
-    );
 }
