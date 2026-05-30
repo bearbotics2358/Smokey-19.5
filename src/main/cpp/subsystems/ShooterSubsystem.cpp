@@ -12,11 +12,11 @@
 using namespace ctre::phoenix6;
 
 ShooterSubsystem::ShooterSubsystem(){
-    ConfigureShooterMotors();
+    ConfigureDrumMotors();
     ConfigureFeederMotors();
 }
 
-void ShooterSubsystem::ConfigureShooterMotors()
+void ShooterSubsystem::ConfigureDrumMotors()
 {
     configs::TalonFXConfiguration configs{};
 
@@ -41,7 +41,7 @@ void ShooterSubsystem::ConfigureShooterMotors()
     m_DrumDMotor.GetConfigurator().Apply(configs);
 }
 
-void ShooterSubsystem::ConfigureFeederMotor()
+void ShooterSubsystem::ConfigureFeederMotors()
 {
     configs::TalonFXConfiguration feeder_configs{};
 
@@ -63,17 +63,40 @@ void ShooterSubsystem::ConfigureFeederMotor()
 
     m_FeederAMotor.GetConfigurator().Apply(feeder_configs);
 
-    configs.MotorOutput.Inverted = signals::InvertedValue::Clockwise_Positive;
+    feeder_configs.MotorOutput.Inverted = signals::InvertedValue::Clockwise_Positive;
     m_FeederBMotor.GetConfigurator().Apply(feeder_configs);
 }
 
 void ShooterSubsystem::Periodic() {}
 void ShooterSubsystem::SimulationPeriodic() {}
 
-units::revolutions_per_minute_t GetDrumSpeed(){return 5_rpm;}
-units::revolutions_per_minute_t CalculateFeederSpeed(){return 5_rpm;}//@todo:write the logic for calculating the feeder motors' speed
+units::revolutions_per_minute_t ShooterSubsystem::GetDrumSpeed() {
+    return 5_rpm;
+}
 
-frc2::CommandPtr EnableShooter(){}
-frc2::CommandPtr DisableShooter(){}
-frc2::CommandPtr EnableDrum(){}
-frc2::CommandPtr SlowDrum(){}
+units::revolutions_per_minute_t ShooterSubsystem::CalculateFeederSpeed() {
+    //@todo:write the logic for calculating the feeder motors' speed
+    return 5_rpm;
+}
+
+frc2::CommandPtr ShooterSubsystem::EnableShooter() {
+    return Run([this] {
+        // @todo Implement the code to enable the drum motors here
+    });
+}
+
+frc2::CommandPtr ShooterSubsystem::DisableShooter() {
+    return Run([this] {
+        // @todo Implement the code to STOP the drum motors here
+    });
+}
+
+frc2::CommandPtr ShooterSubsystem::EnableDrum() {
+    return Run([this] {
+    });
+}
+
+frc2::CommandPtr ShooterSubsystem::SlowDrum() {
+    return Run([this] {
+    });
+}
