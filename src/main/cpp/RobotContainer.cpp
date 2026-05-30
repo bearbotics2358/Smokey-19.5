@@ -44,10 +44,6 @@ RobotContainer::RobotContainer()
     BearLog::SetOptions({BearLogOptions::NTPublish::Yes, BearLogOptions::LogWithNTPrefix::Yes, BearLogOptions::LogExtras::Yes});
 
     ConfigureBindings();
-
-    configs::Pigeon2Configuration pigeon_config{};
-    pigeon_config.GyroTrim.GyroScalarZ = 0.227;
-    m_drivetrain.GetPigeon2().GetConfigurator().Apply(pigeon_config);
 }
 
 void RobotContainer::ConfigureBindings()
