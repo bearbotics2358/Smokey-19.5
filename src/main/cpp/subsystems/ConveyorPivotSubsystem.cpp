@@ -1,4 +1,4 @@
-#include "subsystems/HopperSubsystem.h"
+#include "subsystems/ConveyorPivotSubsystem.h"
 
 #include "bearlog/bearlog.h"
 #include <frc/RobotBase.h>
@@ -7,10 +7,11 @@
 #include <frc/simulation/RoboRioSim.h>
 #include <frc/util/Color8Bit.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/button/RobotModeTriggers.h>
 
 using namespace ctre::phoenix6;
 
-HopperSubsystem::HopperSubsystem()
+ConveyorPivotSubsystem::ConveyorPivotSubsystem()
 {
     ConfigureExtenderMotor();
     ConfigureExtenderCANCoder();
@@ -23,9 +24,14 @@ HopperSubsystem::HopperSubsystem()
         return (units::math::abs(m_extenderMotor.GetVelocity().GetValue()) < 1_tps &&
             units::math::abs(m_extenderMotor.GetTorqueCurrent().GetValue()) > 30_A);
     }).Debounce(0.1_s);
+
+    // Be sure to stop all the motors if the robot is disabled while it's running
+    frc2::RobotModeTriggers::Disabled().WhileTrue(
+        Stop().IgnoringDisable(true)
+    );
 }
 
-void HopperSubsystem::ConfigureExtenderMotor() {
+void ConveyorPivotSubsystem::ConfigureExtenderMotor() {
     configs::TalonFXConfiguration extender_config{};
 
     static constexpr units::ampere_t kPeakTorqueCurrent = 70_A;
@@ -53,7 +59,7 @@ void HopperSubsystem::ConfigureExtenderMotor() {
     m_extenderMotor.GetConfigurator().Apply(extender_config);
 }
 
-void HopperSubsystem::ConfigureExtenderCANCoder() {
+void ConveyorPivotSubsystem::ConfigureExtenderCANCoder() {
     configs::CANcoderConfiguration config{};
 
     config.MagnetSensor.SensorDirection = signals::SensorDirectionValue::CounterClockwise_Positive;
@@ -62,7 +68,7 @@ void HopperSubsystem::ConfigureExtenderCANCoder() {
     m_ExtenderCANCoder.GetConfigurator().Apply(config);
 }
 
-void HopperSubsystem::Periodic() {
+void ConveyorPivotSubsystem::Periodic() {
     BearLog::Log("Intake/Extender/Angle", CurrentAngle());
     BearLog::Log("Intake/Extender/Turns", m_extenderMotor.GetPosition().GetValue());
     BearLog::Log("Intake/Extender/Setpoint", GetAngleFromTurns(m_ExtenderVoltage.Position));
@@ -73,82 +79,51 @@ void HopperSubsystem::Periodic() {
     BearLog::Log("Intake/Extender/Setpoint", m_ExtenderVoltage.Position);
 }
 
-frc2::CommandPtr HopperSubsystem::AgitateToHelpIndexer() {
-    return AgitateIn()
-    .AndThen(AgitateOut())
-    .Repeatedly()
-    .AndThen(StopHopper());
-}
-
-frc2::CommandPtr HopperSubsystem::AgitateIn(){
-    return Run([this]{
-        m_extenderMotor.SetControl(m_ExtenderVoltage.WithPosition(0.05_tr));
-    }).WithTimeout(0.5_s);
-}
-
-frc2::CommandPtr HopperSubsystem::AgitateOut(){
-    return Run([this]{
-        m_extenderMotor.SetControl(m_ExtenderVoltage.WithPosition(0.25_tr));
-    }).WithTimeout(0.5_s);
-}
-
-frc2::CommandPtr HopperSubsystem::ExtendExtenderConstantVolts() {
-    return Run([this] {
-        m_extenderMotor.SetVoltage(2.0_V);
-    });
-}
-
-frc2::CommandPtr HopperSubsystem::RetractExtenderConstantVolts() {
-    return Run([this] {
-        m_extenderMotor.SetVoltage(-2.0_V);
-    });
-}
-
-units::degree_t HopperSubsystem::CurrentAngle() {
+units::degree_t ConveyorPivotSubsystem::CurrentAngle() {
     units::degree_t angle = GetAngleFromTurns(m_extenderMotor.GetPosition().GetValue()) * kEGearRatio;
     return angle;
 }
 
-frc2::CommandPtr HopperSubsystem::ExtendHopper() {
+frc2::CommandPtr ConveyorPivotSubsystem::Extend() {
     return Run([this] {
         m_extenderMotor.SetControl(m_ExtenderVoltage.WithPosition(0.28_tr).WithSlot(0));
     }).Until(
         // This could probably be done using WithLimitForwardMotion, but this works for now
         [this] { return m_ExtenderHardStop.Get(); }
     ).AndThen(
-        StopHopper()
+        Stop()
     );
 }
 
-frc2::CommandPtr HopperSubsystem::StowHopper() {
+frc2::CommandPtr ConveyorPivotSubsystem::Stow() {
     return Run([this] {
         m_extenderMotor.SetControl(m_ExtenderVoltage.WithPosition(0_tr).WithSlot(0));
     }).Until(
         // This could probably be done using WithLimitForwardMotion, but this works for now
         [this] { return m_ExtenderHardStop.Get(); }
     ).AndThen(
-        StopHopper()
+        Stop()
     );
 }
 
-frc2::CommandPtr HopperSubsystem::StopHopper() {
+frc2::CommandPtr ConveyorPivotSubsystem::Stop() {
     return RunOnce([this] {
         m_extenderMotor.SetControl(m_Stop);
     });
 }
 
-units::degree_t HopperSubsystem::GetAngleFromTurns(units::turn_t rotations) {
+units::degree_t ConveyorPivotSubsystem::GetAngleFromTurns(units::turn_t rotations) {
     units::degree_t angle = units::degree_t(rotations.value() * kEGearRatio);
     return angle;
 }
 
-units::turn_t HopperSubsystem::GetTurnsFromAngle(units::degree_t angle) {
+units::turn_t ConveyorPivotSubsystem::GetTurnsFromAngle(units::degree_t angle) {
     units::turn_t rotations = units::turn_t(angle.value() / kEGearRatio);
     return rotations;
 }
 
 // Runs in Simulation only!
-void HopperSubsystem::SimulationInit() {
+void ConveyorPivotSubsystem::SimulationInit() {
     const double kSimIntakeLineWidth = 6;
 
     m_EIntakeMech = m_EMechRoot->Append<frc::MechanismLigament2d>("Turret", kEIntakeRadius.value(), 0_deg, kSimIntakeLineWidth, frc::Color8Bit{frc::Color::kPurple});
@@ -160,7 +135,7 @@ void HopperSubsystem::SimulationInit() {
 }
 
 // Runs in Simulation only!
-void HopperSubsystem::SimulationPeriodic() {
+void ConveyorPivotSubsystem::SimulationPeriodic() {
     auto& extender_sim = m_extenderMotor.GetSimState();
     extender_sim.SetSupplyVoltage(frc::RobotController::GetBatteryVoltage());
 
