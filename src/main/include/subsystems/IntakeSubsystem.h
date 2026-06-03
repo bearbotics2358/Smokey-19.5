@@ -20,7 +20,6 @@ class IntakeSubsystem : public frc2::SubsystemBase {
 public:
         IntakeSubsystem();
         frc2::CommandPtr RunIntake();
-        frc2::CommandPtr RunIntakeToHelpIndexer();
         frc2::CommandPtr RunIntakeInReverse();
         frc2::CommandPtr StopIntake();
 

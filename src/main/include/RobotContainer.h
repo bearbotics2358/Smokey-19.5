@@ -12,7 +12,8 @@
 #include "Telemetry.h"
 #include "Config.h"
 #include "subsystems/IntakeSubsystem.h"
-#include "subsystems/HopperSubsystem.h"
+#include "subsystems/ConveyorPivotSubsystem.h"
+#include "subsystems/ConveyorBeltSubsystem.h"
 #include "vision/VisionConstants.h"
 #include "vision/VisionSubsystem.h"
 #include "subsystems/FMSSubsystem.h"
@@ -43,7 +44,8 @@ private:
     frc2::CommandXboxController operatorJoystick{1};
 
     IntakeSubsystem m_intakeSubsystem;
-    HopperSubsystem m_hopperSubsystem;
+    ConveyorPivotSubsystem m_conveyorPivotSubsystem;
+    ConveyorBeltSubsystem m_conveyorBeltSubsystem;
     FMSSubsystem m_FMSSubsystem;
     DriveManager m_driveManager;
 

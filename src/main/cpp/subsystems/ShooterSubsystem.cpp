@@ -8,6 +8,7 @@
 #include <frc/util/Color8Bit.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include "LaunchHelper.h"
+#include <frc2/command/button/RobotModeTriggers.h>
 
 using namespace ctre::phoenix6;
 
@@ -15,6 +16,11 @@ ShooterSubsystem::ShooterSubsystem()
 {
     ConfigureDrumMotors();
     ConfigureFeederMotors();
+
+    // Be sure to stop all the motors if the robot is disabled while it's running
+    frc2::RobotModeTriggers::Disabled().WhileTrue(
+        DisableDrumAndFeeder().IgnoringDisable(true)
+    );
 }
 
 void ShooterSubsystem::ConfigureDrumMotors()
@@ -87,14 +93,12 @@ void ShooterSubsystem::SimulationPeriodic()
 
 units::revolutions_per_minute_t ShooterSubsystem::GetDrumSpeed()
 {
-    units::revolutions_per_minute_t speed = m_DrumAMotor.GetVelocity().GetValue();
-    return speed;
+    return m_DrumAMotor.GetVelocity().GetValue();
 }
 
 units::revolutions_per_minute_t ShooterSubsystem::GetFeederSpeed()
 {
-    units::revolutions_per_minute_t speed = m_FeederAMotor.GetVelocity().GetValue();
-    return speed;
+    return m_FeederAMotor.GetVelocity().GetValue();
 }
 
 void ShooterSubsystem::SetGoalSpeeds(units::revolutions_per_minute_t drumSpeed, EnableFeeder enableFeeder)

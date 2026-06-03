@@ -16,25 +16,17 @@
 
 using namespace ctre::phoenix6;
 
-class HopperSubsystem : public frc2::SubsystemBase {
+class ConveyorPivotSubsystem : public frc2::SubsystemBase {
 public:
-    HopperSubsystem();
-    frc2::CommandPtr StopIntake();
-    frc2::CommandPtr AgitateToHelpIndexer();
-    frc2::CommandPtr AgitateIn();
-    frc2::CommandPtr AgitateOut();
-
-    frc2::CommandPtr ExtendExtenderConstantVolts();
-    frc2::CommandPtr RetractExtenderConstantVolts();
+    ConveyorPivotSubsystem();
     units::degree_t CurrentAngle();
 
     void Periodic() override;
     void SimulationPeriodic() override;
 
-    frc2::CommandPtr SetGoalAngle();
-    frc2::CommandPtr ExtendHopper();
-    frc2::CommandPtr StowHopper();
-    frc2::CommandPtr StopHopper();
+    frc2::CommandPtr Extend();
+    frc2::CommandPtr Stow();
+    frc2::CommandPtr Stop();
 private:
     controls::MotionMagicVoltage m_ExtenderVoltage = controls::MotionMagicVoltage(0_tr).WithSlot(0);
     controls::NeutralOut m_Stop;
@@ -51,7 +43,6 @@ private:
     hardware::CANcoder m_ExtenderCANCoder{kExtenderCANCoderID};
 
     static constexpr double kEGearRatio = 1;
-    bool isExtended = false;
 
     frc2::Trigger m_ExtenderHardStop;
 

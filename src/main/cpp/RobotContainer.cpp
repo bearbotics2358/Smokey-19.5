@@ -44,10 +44,6 @@ RobotContainer::RobotContainer()
     BearLog::SetOptions({BearLogOptions::NTPublish::Yes, BearLogOptions::LogWithNTPrefix::Yes, BearLogOptions::LogExtras::Yes});
 
     ConfigureBindings();
-
-    configs::Pigeon2Configuration pigeon_config{};
-    pigeon_config.GyroTrim.GyroScalarZ = 0.227;
-    m_drivetrain.GetPigeon2().GetConfigurator().Apply(pigeon_config);
 }
 
 void RobotContainer::ConfigureBindings()
@@ -97,12 +93,12 @@ void RobotContainer::ConfigureBindings()
     driverJoystick.Y().OnTrue(m_intakeSubsystem.RunIntakeInReverse());
     driverJoystick.Y().OnFalse(m_intakeSubsystem.StopIntake());
 
-    operatorJoystick.X().OnTrue(m_hopperSubsystem.ExtendHopper());
-    operatorJoystick.X().OnFalse(m_hopperSubsystem.StopHopper());
-    operatorJoystick.B().OnTrue(m_hopperSubsystem.StowHopper());
-    operatorJoystick.B().OnFalse(m_hopperSubsystem.StopHopper());
+    operatorJoystick.X().OnTrue(m_conveyorPivotSubsystem.Extend());
+    operatorJoystick.X().OnFalse(m_conveyorPivotSubsystem.Stop());
+    operatorJoystick.B().OnTrue(m_conveyorPivotSubsystem.Stow());
+    operatorJoystick.B().OnFalse(m_conveyorPivotSubsystem.Stop());
 
-    operatorJoystick.RightTrigger().OnFalse(m_hopperSubsystem.StopHopper());
+    operatorJoystick.RightTrigger().OnFalse(m_conveyorPivotSubsystem.Stop());
 
     operatorJoystick.LeftTrigger().OnFalse(m_intakeSubsystem.StopIntake());
     operatorJoystick.LeftTrigger().OnTrue(m_intakeSubsystem.RunIntake());
@@ -139,46 +135,22 @@ frc2::Command* RobotContainer::GetAutonomousCommand()
 void RobotContainer::ConfigurePathPlanner() {
     const units::second_t kLaunchTime = 12_s;
     using namespace pathplanner;
-    NamedCommands::registerCommand(
-        "Extend Hopper",
-        std::move(m_hopperSubsystem.ExtendHopper().WithTimeout(1_s))
-    );
-    NamedCommands::registerCommand(
-        "Run Intake",
-        std::move(m_intakeSubsystem.RunIntake())
-    );
-    NamedCommands::registerCommand(
-        "Stop Intake",
-        std::move(m_intakeSubsystem.StopIntake())
-    );
-    NamedCommands::registerCommand(
-        "Empty Hopper",
-        std::move(
-            m_intakeSubsystem.RunIntakeInReverse()
-        )
-    );
-
-    pathplanner::RobotConfig config = pathplanner::RobotConfig::fromGUISettings();
-
-    pathplanner::AutoBuilder::configure(
-        [this]() { return m_drivetrain.GetState().Pose; },
-        [this](frc::Pose2d pose) { m_drivetrain.ResetPose(pose); },
-        [this]() { return m_drivetrain.GetState().Speeds; },
-        [this](frc::ChassisSpeeds speeds) {
-            m_drivetrain.SetControl(
-                drive.WithVelocityX(speeds.vx)
-                    .WithVelocityY(speeds.vy)
-                    .WithRotationalRate(speeds.omega)
-            );
-        },
-
-        std::make_shared<pathplanner::PPHolonomicDriveController>(
-            pathplanner::PIDConstants(5.0, 0.0, 0.0),
-            pathplanner::PIDConstants(5.0, 0.0, 0.0)
-        ),
-
-        config,
-        []() { return true; },
-        &m_drivetrain
-    );
+    // NamedCommands::registerCommand(
+    //     "Extend Hopper",
+    //     std::move(m_conveyorPivotSubsystem.Extend().WithTimeout(1_s))
+    // );
+    // NamedCommands::registerCommand(
+    //     "Run Intake",
+    //     std::move(m_intakeSubsystem.RunIntake())
+    // );
+    // NamedCommands::registerCommand(
+    //     "Stop Intake",
+    //     std::move(m_intakeSubsystem.StopIntake())
+    // );
+    // NamedCommands::registerCommand(
+    //     "Empty Hopper",
+    //     std::move(
+    //         m_intakeSubsystem.RunIntakeInReverse()
+    //     )
+    // );
 }

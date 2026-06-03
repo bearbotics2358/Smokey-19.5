@@ -7,6 +7,7 @@
 #include <frc/simulation/RoboRioSim.h>
 #include <frc/util/Color8Bit.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/button/RobotModeTriggers.h>
 
 using namespace ctre::phoenix6;
 
@@ -17,14 +18,23 @@ IntakeSubsystem::IntakeSubsystem()
     if (frc::RobotBase::IsSimulation()) {
         SimulationInit();
     }
+
+    // Be sure to stop all the motors if the robot is disabled while it's running
+    frc2::RobotModeTriggers::Disabled().WhileTrue(
+        StopIntake().IgnoringDisable(true)
+    );
 }
 
 void IntakeSubsystem::ConfigureIntakeMotor() {
     configs::TalonFXConfiguration configs{};
 
-    static constexpr units::ampere_t kPeakTorqueCurrent = 70_A;
-    configs.TorqueCurrent.PeakForwardTorqueCurrent = kPeakTorqueCurrent;
-    configs.TorqueCurrent.PeakReverseTorqueCurrent = -kPeakTorqueCurrent;
+    // @todo Find out if this is a good stator current limit. It may need to be higher or lower depending on testing.
+    configs.CurrentLimits.StatorCurrentLimit = 80_A;
+    configs.CurrentLimits.StatorCurrentLimitEnable = true;
+
+    // @todo Find out if this is a good supply current limit. It may need to be higher or lower depending on testing.
+    configs.CurrentLimits.SupplyCurrentLimit = 50_A;
+    configs.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     configs.MotorOutput.NeutralMode = signals::NeutralModeValue::Brake;
     configs.MotorOutput.Inverted = signals::InvertedValue::Clockwise_Positive;
@@ -47,13 +57,6 @@ void IntakeSubsystem::Periodic() {
 frc2::CommandPtr IntakeSubsystem::RunIntake() {
     return RunOnce([this] {
         m_intakeSpinMotor.SetControl(m_IntakeVelocity.WithVelocity(2000_rpm));
-    });
-}
-
-frc2::CommandPtr IntakeSubsystem::RunIntakeToHelpIndexer() {
-    // Use this command when attempting to push more fuel into the indexer
-    return RunOnce([this] {
-        m_intakeSpinMotor.SetControl(m_IntakeVelocity.WithVelocity(500_rpm));
     });
 }
 
