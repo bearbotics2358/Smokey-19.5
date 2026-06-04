@@ -62,22 +62,22 @@ class RobotZoneHelper {
             frc::Rectangle2d blueRightTrench = frc::Rectangle2d(
                 frc::Pose2d(182.11_in, 26.22_in, 
                 frc::Rotation2d()), 
-                300_in, 69.84_in
+                350_in, 79.84_in
             );
             frc::Rectangle2d blueLeftTrench = frc::Rectangle2d(
                 frc::Pose2d(182.11_in, 291.47_in, 
                 frc::Rotation2d()), 
-                300_in, 69.84_in
+                350_in, 79.84_in
             );
             frc::Rectangle2d redRightTrench = frc::Rectangle2d(
                 frc::Pose2d(469.11_in, 26.22_in, 
                 frc::Rotation2d()), 
-                300_in, 69.84_in
+                350_in, 79.84_in
             );
             frc::Rectangle2d redLeftTrench = frc::Rectangle2d(
                 frc::Pose2d(469.11_in, 291.47_in, 
                 frc::Rotation2d()), 
-                300_in, 69.84_in
+                350_in, 79.84_in
             );
 
             if (blueRightTrench.Contains(botPose.Translation()) || redRightTrench.Contains(botPose.Translation())) {
