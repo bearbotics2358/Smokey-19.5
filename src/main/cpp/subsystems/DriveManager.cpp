@@ -33,11 +33,17 @@ bool DriveManager::GoThroughTrench() {
     RobotZoneHelper::TrenchZone inTrenchZone = RobotZoneHelper::isRobotInTrenchZone(m_GetCurrentBotPose());
 
     if (!(inTrenchZone == RobotZoneHelper::TrenchZone::NoTrenchZone)) {
+
+        units::degree_t m_RotationSetpoint;
         if (inTrenchZone == RobotZoneHelper::TrenchZone::InRightTrenchZone) {
             m_SetpointDistance = kRightSetpointDistance;
+            m_RotationSetpoint = -90_deg;
         } else {
             m_SetpointDistance = kLeftSetpointDistance;
+            m_RotationSetpoint = 90_deg;
         }
+
+        BearLog::Log("DriverAssist/RotationSetpoint", m_RotationSetpoint);
 
 
         frc::Pose2d botPose = m_GetCurrentBotPose();
@@ -47,7 +53,7 @@ bool DriveManager::GoThroughTrench() {
         BearLog::Log("Strafe PID", robotY);
 
         units::degree_t currentDegrees = botPose.Rotation().Degrees();
-        double rotation = m_rotationalPID.Calculate(currentDegrees.value(), (0_deg).value());
+        double rotation = m_rotationalPID.Calculate(currentDegrees.value(), (m_RotationSetpoint).value());
         rotation = std::clamp(rotation, -1.0, 1.0);
 
         BearLog::Log("Rotation PID", rotation);
@@ -71,11 +77,24 @@ bool DriveManager::AngleBump() {
     RobotZoneHelper::BumpZone inBumpZone = RobotZoneHelper::isRobotInBumpZone(m_GetCurrentBotPose());
 
     if (!(inBumpZone == RobotZoneHelper::BumpZone::NoBumpZone)) {
+
+        units::degree_t m_RotationSetpoint;
+
+        if (inBumpZone == RobotZoneHelper::BumpZone::InRightBumpZone) {
+            m_SetpointDistance = kRightSetpointDistance;
+            m_RotationSetpoint = -90_deg;
+        } else {
+            m_SetpointDistance = kLeftSetpointDistance;
+            m_RotationSetpoint = 90_deg;
+        }
+
+        BearLog::Log("DriverAssist/RotationSetpoint", m_RotationSetpoint);
+
         frc::Pose2d botPose = m_GetCurrentBotPose();
 
         units::degree_t currentDegrees = botPose.Rotation().Degrees();
 
-        double rotation = m_rotationalPID.Calculate(currentDegrees.value(), (45_deg).value());
+        double rotation = m_rotationalPID.Calculate(currentDegrees.value(), (m_RotationSetpoint).value());
         rotation = std::clamp(rotation, -1.0, 1.0);
 
         BearLog::Log("Rotation PID", rotation);
