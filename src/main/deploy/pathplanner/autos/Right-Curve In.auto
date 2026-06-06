@@ -1,0 +1,49 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right-Trench to Center"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right-Center to Launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right-Launch to Center"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RIght-Center to Hub"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right-Hub to Launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right-Launch to Center"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
