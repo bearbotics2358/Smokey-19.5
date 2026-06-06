@@ -135,22 +135,28 @@ frc2::Command* RobotContainer::GetAutonomousCommand()
 void RobotContainer::ConfigurePathPlanner() {
     const units::second_t kLaunchTime = 12_s;
     using namespace pathplanner;
-    // NamedCommands::registerCommand(
-    //     "Extend Hopper",
-    //     std::move(m_conveyorPivotSubsystem.Extend().WithTimeout(1_s))
-    // );
-    // NamedCommands::registerCommand(
-    //     "Run Intake",
-    //     std::move(m_intakeSubsystem.RunIntake())
-    // );
-    // NamedCommands::registerCommand(
-    //     "Stop Intake",
-    //     std::move(m_intakeSubsystem.StopIntake())
-    // );
-    // NamedCommands::registerCommand(
-    //     "Empty Hopper",
-    //     std::move(
-    //         m_intakeSubsystem.RunIntakeInReverse()
-    //     )
-    // );
+    NamedCommands::registerCommand(
+        "Launch",
+        std::move(m_ShooterSubsystem.RunDrumAndFeeder().WithTimeout(kAutoLaunchTime))
+    );
+    NamedCommands::registerCommand(
+        "Standby",
+        std::move(m_ShooterSubsystem.RunDrumOnly())
+    );
+    NamedCommands::registerCommand(
+        "Extend Pivot",
+        std::move(m_conveyorPivotSubsystem.Extend())
+    );
+    NamedCommands::registerCommand(
+        "Retract Pivot",
+        std::move(m_conveyorPivotSubsystem.Stow())//@todo:incorporate running the conveyor belts and intake with this so that they compressed fuel are being constantly fed through
+    );
+    NamedCommands::registerCommand(
+        "Run Intake",
+        std::move(m_intakeSubsystem.RunIntake())
+    );
+    NamedCommands::registerCommand(
+        "Stop Intake",
+        std::move(m_intakeSubsystem.StopIntake())
+    );
 }
