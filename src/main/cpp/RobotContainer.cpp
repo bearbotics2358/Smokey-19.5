@@ -98,16 +98,24 @@ void RobotContainer::ConfigureBindings()
     operatorJoystick.B().OnTrue(m_conveyorPivotSubsystem.Stow());
     operatorJoystick.B().OnFalse(m_conveyorPivotSubsystem.Stop());
 
-    operatorJoystick.RightTrigger().OnFalse(m_conveyorPivotSubsystem.Stop());
-
     operatorJoystick.LeftTrigger().OnFalse(m_intakeSubsystem.StopIntake());
     operatorJoystick.LeftTrigger().OnTrue(m_intakeSubsystem.RunIntake());
 
     operatorJoystick.LeftBumper().OnTrue(m_intakeSubsystem.RunIntakeInReverse());
     operatorJoystick.LeftBumper().OnFalse(m_intakeSubsystem.StopIntake());
 
-    driverJoystick.LeftTrigger().OnFalse(m_intakeSubsystem.StopIntake());
-    driverJoystick.LeftTrigger().OnTrue(m_intakeSubsystem.RunIntake());
+    driverJoystick.LeftTrigger().OnFalse(
+        frc2::cmd::Parallel(
+            m_intakeSubsystem.StopIntake(),
+            m_conveyorBeltSubsystem.Stop()
+        )
+    );
+    driverJoystick.LeftTrigger().OnTrue(
+        frc2::cmd::Parallel(
+            m_intakeSubsystem.RunIntake(),
+            m_conveyorBeltSubsystem.RunBelt()
+        )
+    );
 
     // Run SysId routines when holding back/start and X/Y.
     // Note that each routine should be run exactly once in a single log.

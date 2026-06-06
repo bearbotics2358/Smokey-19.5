@@ -26,9 +26,10 @@ public:
   void SetGoalSpeeds(units::revolutions_per_minute_t speed);
   void Periodic() override;
   void SimulationPeriodic() override;
+
   frc2::CommandPtr RunDrumAndFeeder();
   frc2::CommandPtr DisableDrumAndFeeder();
-  frc2::CommandPtr RunDrumOnly();//for spinning up
+  frc2::CommandPtr RunDrumSlowly();
 
 private:
   void ConfigureDrumMotors();
@@ -38,13 +39,13 @@ private:
   void StopFeederMotors();
   void SetGoalSpeeds(units::revolutions_per_minute_t drumSpeed, EnableFeeder enableFeeder);
 
-  static constexpr int kDrumAMotorId = 1;//@todo: change to actual motor IDs
-  static constexpr int kDrumBMotorId = 2;
-  static constexpr int kDrumCMotorId = 3;
-  static constexpr int kDrumDMotorId = 4;
+  static constexpr int kDrumAMotorId = 34;
+  static constexpr int kDrumBMotorId = 33;
+  static constexpr int kDrumCMotorId = 35;
+  static constexpr int kDrumDMotorId = 36;
 
-  static constexpr int kFeederAMotorId = 5;
-  static constexpr int kFeederBMotorId = 6;
+  static constexpr int kFeederAMotorId = 30;
+  static constexpr int kFeederBMotorId = 32;
 
   static constexpr units::revolutions_per_minute_t kSlowDrumSpeed = 100_rpm;
 

@@ -14,7 +14,6 @@ using namespace ctre::phoenix6;
 ConveyorPivotSubsystem::ConveyorPivotSubsystem()
 {
     ConfigureExtenderMotor();
-    ConfigureExtenderCANCoder();
 
     if (frc::RobotBase::IsSimulation()) {
         SimulationInit();
@@ -34,9 +33,6 @@ ConveyorPivotSubsystem::ConveyorPivotSubsystem()
 void ConveyorPivotSubsystem::ConfigureExtenderMotor() {
     configs::TalonFXConfiguration extender_config{};
 
-    static constexpr units::ampere_t kPeakTorqueCurrent = 70_A;
-    extender_config.TorqueCurrent.PeakForwardTorqueCurrent = kPeakTorqueCurrent;
-    extender_config.TorqueCurrent.PeakReverseTorqueCurrent = -kPeakTorqueCurrent;
     extender_config.CurrentLimits.StatorCurrentLimit = 50_A;
     extender_config.CurrentLimits.StatorCurrentLimitEnable = true;
 
@@ -48,24 +44,7 @@ void ConveyorPivotSubsystem::ConfigureExtenderMotor() {
     extender_config.Slot0.kD = 0.0;
     extender_config.Slot0.kV = 0.12;
 
-    extender_config.MotionMagic.MotionMagicCruiseVelocity = 50_tps;
-    extender_config.MotionMagic.MotionMagicAcceleration = 160_tr_per_s_sq;
-
-    extender_config.Feedback.FeedbackRemoteSensorID = m_ExtenderCANCoder.GetDeviceID();
-    extender_config.Feedback.FeedbackSensorSource = signals::FeedbackSensorSourceValue::FusedCANcoder;
-    extender_config.Feedback.RotorToSensorRatio = 8.1818181818;
-    extender_config.Feedback.SensorToMechanismRatio = 1.0;
-
     m_extenderMotor.GetConfigurator().Apply(extender_config);
-}
-
-void ConveyorPivotSubsystem::ConfigureExtenderCANCoder() {
-    configs::CANcoderConfiguration config{};
-
-    config.MagnetSensor.SensorDirection = signals::SensorDirectionValue::CounterClockwise_Positive;
-    config.MagnetSensor.MagnetOffset = -0.213135_tr;
-
-    m_ExtenderCANCoder.GetConfigurator().Apply(config);
 }
 
 void ConveyorPivotSubsystem::Periodic() {
@@ -74,8 +53,6 @@ void ConveyorPivotSubsystem::Periodic() {
     BearLog::Log("Intake/Extender/Setpoint", GetAngleFromTurns(m_ExtenderVoltage.Position));
     BearLog::Log("Intake/Extender/Current", m_extenderMotor.GetTorqueCurrent().GetValue());
     BearLog::Log("Intake/Extender/Voltage", m_extenderMotor.GetMotorVoltage().GetValue());
-
-    BearLog::Log("Intake/Extender/CANcoder position", m_ExtenderCANCoder.GetPosition().GetValue());
     BearLog::Log("Intake/Extender/Setpoint", m_ExtenderVoltage.Position);
 }
 

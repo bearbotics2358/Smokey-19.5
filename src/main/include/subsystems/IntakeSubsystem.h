@@ -31,7 +31,7 @@ private:
 
         void ConfigureIntakeMotor();
 
-        static constexpr int kIntakeMotorID = 62;
+        static constexpr int kIntakeMotorID = 29;
         hardware::TalonFX m_intakeSpinMotor{kIntakeMotorID};
 
         static constexpr double kGearRatio = 1;

@@ -12,6 +12,10 @@
 
 using namespace ctre::phoenix6;
 
+// Spinning up the drum takes time and also spikes the current usage. To avoid starting and stopping the
+// drum throughout the match, always keep it running at a minimum of this speed to keep current usage in check.
+const units::revolutions_per_minute_t kMinimumDrumSpeed = 1000_rpm;
+
 ShooterSubsystem::ShooterSubsystem()
 {
     ConfigureDrumMotors();
@@ -103,9 +107,6 @@ units::revolutions_per_minute_t ShooterSubsystem::GetFeederSpeed()
 
 void ShooterSubsystem::SetGoalSpeeds(units::revolutions_per_minute_t drumSpeed, EnableFeeder enableFeeder)
 {
-    // Spinning up the drum takes time and also spikes the current usage. To avoid starting and stopping the
-    // drum throughout the match, always keep it running at a minimum of this speed to keep current usage in check.
-    units::revolutions_per_minute_t kMinimumDrumSpeed = 1000_rpm;
     units::revolutions_per_minute_t drum_speed_to_set = units::math::max(drumSpeed, kMinimumDrumSpeed);
 
     controls::VelocityVoltage drum_velocity_request = m_DrumVelocityVoltage.WithVelocity(drum_speed_to_set);
@@ -116,7 +117,7 @@ void ShooterSubsystem::SetGoalSpeeds(units::revolutions_per_minute_t drumSpeed, 
 
     if (EnableFeeder::Yes == enableFeeder) {
         // Using a constant speed for the feeder velocity since it shouldn't need to change
-        units::revolutions_per_minute_t kFeederVelocity = 4500_rpm;
+        const units::revolutions_per_minute_t kFeederVelocity = 2500_rpm;
         controls::VelocityVoltage feeder_velocity_request = m_FeederVelocityVoltage.WithVelocity(kFeederVelocity);
         m_FeederAMotor.SetControl(feeder_velocity_request);
         m_FeederBMotor.SetControl(feeder_velocity_request);
@@ -133,11 +134,12 @@ frc2::CommandPtr ShooterSubsystem::RunDrumAndFeeder()
     });
 }
 
-frc2::CommandPtr ShooterSubsystem::RunDrumOnly()
+frc2::CommandPtr ShooterSubsystem::RunDrumSlowly()
 {
     return Run([this] {
-        TrajectoryInfo parameters = LaunchHelper::GetInstance().GetLaunchParameters();
-        SetGoalSpeeds(parameters.wheel_rpm, EnableFeeder::No);
+        // When we're not intending to launch fuel, keep the drum running at an idle speed to avoid
+        // the current spike and extra time used when spinning it up.
+        SetGoalSpeeds(kMinimumDrumSpeed, EnableFeeder::No);
     });
 }
 
