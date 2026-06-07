@@ -7,31 +7,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left-Trench to Center"
+            "pathName": "Right-Trench to Center"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left-Center to Launch"
+            "pathName": "Right-Center to Launch"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left-Launch to Close To Hub"
+            "pathName": "Right-Launch to Center"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left-Spiral Sweep"
+            "pathName": "RIght-Center to Hub"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left-Launch to Close To Hub"
+            "pathName": "Right-Hub to Launch"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right-Launch to Center"
           }
         }
       ]
