@@ -23,6 +23,8 @@ public:
         frc2::CommandPtr RunIntakeInReverse();
         frc2::CommandPtr StopIntake();
 
+        frc2::CommandPtr TestIntake();
+
         void Periodic() override;
         void SimulationPeriodic() override;
 private:
@@ -31,7 +33,7 @@ private:
 
         void ConfigureIntakeMotor();
 
-        static constexpr int kIntakeMotorID = 62;
+        static constexpr int kIntakeMotorID = 29;
         hardware::TalonFX m_intakeSpinMotor{kIntakeMotorID};
 
         static constexpr double kGearRatio = 1;

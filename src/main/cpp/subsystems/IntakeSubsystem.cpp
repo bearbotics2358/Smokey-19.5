@@ -37,7 +37,7 @@ void IntakeSubsystem::ConfigureIntakeMotor() {
     configs.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     configs.MotorOutput.NeutralMode = signals::NeutralModeValue::Brake;
-    configs.MotorOutput.Inverted = signals::InvertedValue::Clockwise_Positive;
+    configs.MotorOutput.Inverted = signals::InvertedValue::CounterClockwise_Positive;
 
     configs.CurrentLimits.StatorCurrentLimit = 60_A;
     configs.CurrentLimits.StatorCurrentLimitEnable = true;
@@ -54,15 +54,21 @@ void IntakeSubsystem::Periodic() {
     BearLog::Log("Intake/Velocity", units::revolutions_per_minute_t(m_intakeSpinMotor.GetVelocity().GetValue()));
 }
 
+frc2::CommandPtr IntakeSubsystem::TestIntake() {
+    return Run([this] {
+        m_intakeSpinMotor.SetVoltage(-2_V);
+    });
+}
+
 frc2::CommandPtr IntakeSubsystem::RunIntake() {
     return RunOnce([this] {
-        m_intakeSpinMotor.SetControl(m_IntakeVelocity.WithVelocity(2000_rpm));
+        m_intakeSpinMotor.SetControl(m_IntakeVelocity.WithVelocity(1000_rpm));
     });
 }
 
 frc2::CommandPtr IntakeSubsystem::RunIntakeInReverse() {
     return RunOnce([this] {
-        m_intakeSpinMotor.SetControl(m_IntakeVelocity.WithVelocity(-2000_rpm));
+        m_intakeSpinMotor.SetControl(m_IntakeVelocity.WithVelocity(-1000_rpm));
     });
 }
 

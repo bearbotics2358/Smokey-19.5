@@ -24,6 +24,8 @@ public:
     void Periodic() override;
     void SimulationPeriodic() override;
 
+    frc2::CommandPtr ExtendSlow();
+    frc2::CommandPtr RetractSlow();
     frc2::CommandPtr Extend();
     frc2::CommandPtr Stow();
     frc2::CommandPtr Stop();
@@ -37,10 +39,8 @@ private:
     void ConfigureExtenderMotor();
     void ConfigureExtenderCANCoder();
 
-    static constexpr int kExtenderMotorID = 61;
-    static constexpr int kExtenderCANCoderID = 33;
+    static constexpr int kExtenderMotorID = 40;
     hardware::TalonFX m_extenderMotor{kExtenderMotorID};
-    hardware::CANcoder m_ExtenderCANCoder{kExtenderCANCoderID};
 
     static constexpr double kEGearRatio = 1;
 

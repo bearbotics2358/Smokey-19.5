@@ -12,7 +12,8 @@ public:
 
     void Periodic() override;
 
-    frc2::CommandPtr EnableBelt();
+    frc2::CommandPtr TestBelt();
+    frc2::CommandPtr RunBelt();
     frc2::CommandPtr Stop();
 private:
     controls::VelocityVoltage m_BeltVoltage = controls::VelocityVoltage(0_rpm).WithSlot(0);
@@ -20,6 +21,6 @@ private:
 
     void ConfigureBeltMotor();
 
-    static constexpr int kBeltMotorID = 62;
+    static constexpr int kBeltMotorID = 31;
     hardware::TalonFX m_beltMotor{kBeltMotorID};
 };

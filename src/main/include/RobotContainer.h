@@ -14,6 +14,7 @@
 #include "subsystems/IntakeSubsystem.h"
 #include "subsystems/ConveyorPivotSubsystem.h"
 #include "subsystems/ConveyorBeltSubsystem.h"
+#include "subsystems/ShooterSubsystem.h"
 #include "vision/VisionConstants.h"
 #include "vision/VisionSubsystem.h"
 #include "subsystems/FMSSubsystem.h"
@@ -43,6 +44,7 @@ private:
     frc2::CommandXboxController driverJoystick{0};
     frc2::CommandXboxController operatorJoystick{1};
 
+    ShooterSubsystem m_shooterSubsystem;
     IntakeSubsystem m_intakeSubsystem;
     ConveyorPivotSubsystem m_conveyorPivotSubsystem;
     ConveyorBeltSubsystem m_conveyorBeltSubsystem;
