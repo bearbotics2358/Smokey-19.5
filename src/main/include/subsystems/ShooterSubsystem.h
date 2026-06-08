@@ -31,6 +31,10 @@ public:
   frc2::CommandPtr DisableDrumAndFeeder();
   frc2::CommandPtr RunDrumSlowly();
 
+  frc2::CommandPtr TestDrum();
+  frc2::CommandPtr TestFeeder();
+  frc2::CommandPtr TestRollerBed();
+
 private:
   void ConfigureDrumMotors();
   void ConfigureFeederMotors();
@@ -47,6 +51,8 @@ private:
   static constexpr int kFeederAMotorId = 30;
   static constexpr int kFeederBMotorId = 32;
 
+  static constexpr int kRollerBedMotorId = 28;
+
   static constexpr units::revolutions_per_minute_t kSlowDrumSpeed = 100_rpm;
 
   hardware::TalonFX m_DrumAMotor{kDrumAMotorId};
@@ -57,8 +63,11 @@ private:
   hardware::TalonFX m_FeederAMotor{kFeederAMotorId};
   hardware::TalonFX m_FeederBMotor{kFeederBMotorId};
 
+  hardware::TalonFX m_RollerBedMotor{kRollerBedMotorId};
+
   controls::VelocityVoltage m_DrumVelocityVoltage = controls::VelocityVoltage(0_rpm).WithSlot(0);
   controls::VelocityVoltage m_FeederVelocityVoltage = controls::VelocityVoltage(0_rpm).WithSlot(0);
+  controls::VelocityVoltage m_RollerBedVelocityVoltage = controls::VelocityVoltage(0_rpm).WithSlot(0);
   controls::NeutralOut m_Stop;
 
 };
