@@ -53,7 +53,7 @@ private:
 
   static constexpr int kRollerBedMotorId = 28;
 
-  static constexpr units::revolutions_per_minute_t kSlowDrumSpeed = 100_rpm;
+  static constexpr units::revolutions_per_minute_t kSlowDrumSpeed = 100_rpm; //is this redundant to kMinimumDrumSpeed? not used
 
   hardware::TalonFX m_DrumAMotor{kDrumAMotorId};
   hardware::TalonFX m_DrumBMotor{kDrumBMotorId};
