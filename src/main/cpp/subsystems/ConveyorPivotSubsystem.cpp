@@ -39,7 +39,10 @@ void ConveyorPivotSubsystem::ConfigureExtenderMotor() {
     extender_config.MotorOutput.NeutralMode = signals::NeutralModeValue::Brake;
     extender_config.MotorOutput.Inverted = signals::InvertedValue::CounterClockwise_Positive;
 
-    extender_config.Slot0.kP = 30.0;
+    extender_config.MotionMagic.MotionMagicCruiseVelocity = 30_tps;
+    extender_config.MotionMagic.MotionMagicAcceleration = 100_tr_per_s_sq;
+
+    extender_config.Slot0.kP = 1.0;
     extender_config.Slot0.kI = 0.0;
     extender_config.Slot0.kD = 0.0;
     extender_config.Slot0.kV = 0.12;
@@ -61,9 +64,22 @@ units::degree_t ConveyorPivotSubsystem::CurrentAngle() {
     return angle;
 }
 
+frc2::CommandPtr ConveyorPivotSubsystem::ExtendSlow() {
+    return Run([this] {
+        m_extenderMotor.SetVoltage(0.5_V);
+    });
+}
+
+frc2::CommandPtr ConveyorPivotSubsystem::RetractSlow() {
+    return Run([this] {
+        m_extenderMotor.SetVoltage(-0.5_V);
+    });
+}
+
 frc2::CommandPtr ConveyorPivotSubsystem::Extend() {
     return Run([this] {
-        m_extenderMotor.SetControl(m_ExtenderVoltage.WithPosition(0.28_tr).WithSlot(0));
+        static const units::turn_t kFullyExtended = 21.0_tr;
+        m_extenderMotor.SetControl(m_ExtenderVoltage.WithPosition(kFullyExtended).WithSlot(0));
     }).Until(
         // This could probably be done using WithLimitForwardMotion, but this works for now
         [this] { return m_ExtenderHardStop.Get(); }
@@ -74,7 +90,8 @@ frc2::CommandPtr ConveyorPivotSubsystem::Extend() {
 
 frc2::CommandPtr ConveyorPivotSubsystem::Stow() {
     return Run([this] {
-        m_extenderMotor.SetControl(m_ExtenderVoltage.WithPosition(0_tr).WithSlot(0));
+        static const units::turn_t kFullyRetracted = 0.0_tr;
+        m_extenderMotor.SetControl(m_ExtenderVoltage.WithPosition(kFullyRetracted).WithSlot(0));
     }).Until(
         // This could probably be done using WithLimitForwardMotion, but this works for now
         [this] { return m_ExtenderHardStop.Get(); }
