@@ -12,6 +12,7 @@ public:
 
     void Periodic() override;
 
+    frc2::CommandPtr TestBelt();
     frc2::CommandPtr RunBelt();
     frc2::CommandPtr Stop();
 private:

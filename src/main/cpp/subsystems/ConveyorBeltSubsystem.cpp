@@ -40,13 +40,20 @@ void ConveyorBeltSubsystem::ConfigureBeltMotor() {
 }
 
 void ConveyorBeltSubsystem::Periodic() {
-    BearLog::Log("Conveyor/Belt/Speed", m_beltMotor.GetVelocity().GetValue());
+    BearLog::Log("Conveyor/Belt/Speed", units::revolutions_per_minute_t(m_beltMotor.GetVelocity().GetValue()));
     BearLog::Log("Conveyor/Belt/SpeedSetPoint", units::revolutions_per_minute_t(m_BeltVoltage.Velocity()));
 }
 
-frc2::CommandPtr ConveyorBeltSubsystem::EnableBelt() {
+frc2::CommandPtr ConveyorBeltSubsystem::TestBelt() {
+    return Run([this] {
+        m_beltMotor.SetVoltage(4_V);
+    });
+}
+
+frc2::CommandPtr ConveyorBeltSubsystem::RunBelt() {
     return RunOnce([this] {
-        m_beltMotor.SetControl(m_BeltVoltage.WithVelocity(1500_rpm));
+        // @todo Re-enable this when the conveyor belt is fixed!
+        // m_beltMotor.SetControl(m_BeltVoltage.WithVelocity(1500_rpm));
     });
 }
 
