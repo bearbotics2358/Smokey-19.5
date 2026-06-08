@@ -14,7 +14,6 @@ using namespace ctre::phoenix6;
 ConveyorPivotSubsystem::ConveyorPivotSubsystem()
 {
     ConfigureExtenderMotor();
-    ConfigureExtenderCANCoder();
 
     if (frc::RobotBase::IsSimulation()) {
         SimulationInit();
@@ -34,38 +33,21 @@ ConveyorPivotSubsystem::ConveyorPivotSubsystem()
 void ConveyorPivotSubsystem::ConfigureExtenderMotor() {
     configs::TalonFXConfiguration extender_config{};
 
-    static constexpr units::ampere_t kPeakTorqueCurrent = 70_A;
-    extender_config.TorqueCurrent.PeakForwardTorqueCurrent = kPeakTorqueCurrent;
-    extender_config.TorqueCurrent.PeakReverseTorqueCurrent = -kPeakTorqueCurrent;
     extender_config.CurrentLimits.StatorCurrentLimit = 50_A;
     extender_config.CurrentLimits.StatorCurrentLimitEnable = true;
 
     extender_config.MotorOutput.NeutralMode = signals::NeutralModeValue::Brake;
     extender_config.MotorOutput.Inverted = signals::InvertedValue::CounterClockwise_Positive;
 
-    extender_config.Slot0.kP = 30.0;
+    extender_config.MotionMagic.MotionMagicCruiseVelocity = 30_tps;
+    extender_config.MotionMagic.MotionMagicAcceleration = 100_tr_per_s_sq;
+
+    extender_config.Slot0.kP = 1.0;
     extender_config.Slot0.kI = 0.0;
     extender_config.Slot0.kD = 0.0;
     extender_config.Slot0.kV = 0.12;
 
-    extender_config.MotionMagic.MotionMagicCruiseVelocity = 50_tps;
-    extender_config.MotionMagic.MotionMagicAcceleration = 160_tr_per_s_sq;
-
-    extender_config.Feedback.FeedbackRemoteSensorID = m_ExtenderCANCoder.GetDeviceID();
-    extender_config.Feedback.FeedbackSensorSource = signals::FeedbackSensorSourceValue::FusedCANcoder;
-    extender_config.Feedback.RotorToSensorRatio = 8.1818181818;
-    extender_config.Feedback.SensorToMechanismRatio = 1.0;
-
     m_extenderMotor.GetConfigurator().Apply(extender_config);
-}
-
-void ConveyorPivotSubsystem::ConfigureExtenderCANCoder() {
-    configs::CANcoderConfiguration config{};
-
-    config.MagnetSensor.SensorDirection = signals::SensorDirectionValue::CounterClockwise_Positive;
-    config.MagnetSensor.MagnetOffset = -0.213135_tr;
-
-    m_ExtenderCANCoder.GetConfigurator().Apply(config);
 }
 
 void ConveyorPivotSubsystem::Periodic() {
@@ -74,8 +56,6 @@ void ConveyorPivotSubsystem::Periodic() {
     BearLog::Log("Intake/Extender/Setpoint", GetAngleFromTurns(m_ExtenderVoltage.Position));
     BearLog::Log("Intake/Extender/Current", m_extenderMotor.GetTorqueCurrent().GetValue());
     BearLog::Log("Intake/Extender/Voltage", m_extenderMotor.GetMotorVoltage().GetValue());
-
-    BearLog::Log("Intake/Extender/CANcoder position", m_ExtenderCANCoder.GetPosition().GetValue());
     BearLog::Log("Intake/Extender/Setpoint", m_ExtenderVoltage.Position);
 }
 
@@ -84,9 +64,22 @@ units::degree_t ConveyorPivotSubsystem::CurrentAngle() {
     return angle;
 }
 
+frc2::CommandPtr ConveyorPivotSubsystem::ExtendSlow() {
+    return Run([this] {
+        m_extenderMotor.SetVoltage(0.5_V);
+    });
+}
+
+frc2::CommandPtr ConveyorPivotSubsystem::RetractSlow() {
+    return Run([this] {
+        m_extenderMotor.SetVoltage(-0.5_V);
+    });
+}
+
 frc2::CommandPtr ConveyorPivotSubsystem::Extend() {
     return Run([this] {
-        m_extenderMotor.SetControl(m_ExtenderVoltage.WithPosition(0.28_tr).WithSlot(0));
+        static const units::turn_t kFullyExtended = 21.0_tr;
+        m_extenderMotor.SetControl(m_ExtenderVoltage.WithPosition(kFullyExtended).WithSlot(0));
     }).Until(
         // This could probably be done using WithLimitForwardMotion, but this works for now
         [this] { return m_ExtenderHardStop.Get(); }
@@ -97,7 +90,8 @@ frc2::CommandPtr ConveyorPivotSubsystem::Extend() {
 
 frc2::CommandPtr ConveyorPivotSubsystem::Stow() {
     return Run([this] {
-        m_extenderMotor.SetControl(m_ExtenderVoltage.WithPosition(0_tr).WithSlot(0));
+        static const units::turn_t kFullyRetracted = 0.0_tr;
+        m_extenderMotor.SetControl(m_ExtenderVoltage.WithPosition(kFullyRetracted).WithSlot(0));
     }).Until(
         // This could probably be done using WithLimitForwardMotion, but this works for now
         [this] { return m_ExtenderHardStop.Get(); }

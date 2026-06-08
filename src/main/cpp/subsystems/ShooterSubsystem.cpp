@@ -12,6 +12,10 @@
 
 using namespace ctre::phoenix6;
 
+// Spinning up the drum takes time and also spikes the current usage. To avoid starting and stopping the
+// drum throughout the match, always keep it running at a minimum of this speed to keep current usage in check.
+const units::revolutions_per_minute_t kMinimumDrumSpeed = 900_rpm;
+
 ShooterSubsystem::ShooterSubsystem()
 {
     ConfigureDrumMotors();
@@ -39,7 +43,7 @@ void ShooterSubsystem::ConfigureDrumMotors()
 
     configs.MotorOutput.Inverted = signals::InvertedValue::CounterClockwise_Positive;
 
-    configs.Slot0.kP = 100.0;
+    configs.Slot0.kP = 0.4;
     configs.Slot0.kI = 0.0;
     configs.Slot0.kD = 0.0;
     configs.Slot0.kV = 0.12;
@@ -68,15 +72,16 @@ void ShooterSubsystem::ConfigureFeederMotors()
 
     feeder_configs.MotorOutput.Inverted = signals::InvertedValue::Clockwise_Positive;
 
-    feeder_configs.Slot0.kP = 1.0;
+    feeder_configs.Slot0.kP = 0.1;
     feeder_configs.Slot0.kI = 0.0;
     feeder_configs.Slot0.kD = 0.0;
     feeder_configs.Slot0.kV = 0.12;
 
     m_FeederAMotor.GetConfigurator().Apply(feeder_configs);
 
-    feeder_configs.MotorOutput.Inverted = signals::InvertedValue::Clockwise_Positive;
+    feeder_configs.MotorOutput.Inverted = signals::InvertedValue::CounterClockwise_Positive;
     m_FeederBMotor.GetConfigurator().Apply(feeder_configs);
+    m_RollerBedMotor.GetConfigurator().Apply(feeder_configs);
 }
 
 void ShooterSubsystem::Periodic()
@@ -103,9 +108,6 @@ units::revolutions_per_minute_t ShooterSubsystem::GetFeederSpeed()
 
 void ShooterSubsystem::SetGoalSpeeds(units::revolutions_per_minute_t drumSpeed, EnableFeeder enableFeeder)
 {
-    // Spinning up the drum takes time and also spikes the current usage. To avoid starting and stopping the
-    // drum throughout the match, always keep it running at a minimum of this speed to keep current usage in check.
-    units::revolutions_per_minute_t kMinimumDrumSpeed = 1000_rpm;
     units::revolutions_per_minute_t drum_speed_to_set = units::math::max(drumSpeed, kMinimumDrumSpeed);
 
     controls::VelocityVoltage drum_velocity_request = m_DrumVelocityVoltage.WithVelocity(drum_speed_to_set);
@@ -116,28 +118,63 @@ void ShooterSubsystem::SetGoalSpeeds(units::revolutions_per_minute_t drumSpeed, 
 
     if (EnableFeeder::Yes == enableFeeder) {
         // Using a constant speed for the feeder velocity since it shouldn't need to change
-        units::revolutions_per_minute_t kFeederVelocity = 4500_rpm;
-        controls::VelocityVoltage feeder_velocity_request = m_FeederVelocityVoltage.WithVelocity(kFeederVelocity);
+        units::revolutions_per_minute_t feeder_velocity = drum_speed_to_set * 1.5;
+        controls::VelocityVoltage feeder_velocity_request = m_FeederVelocityVoltage.WithVelocity(feeder_velocity);
         m_FeederAMotor.SetControl(feeder_velocity_request);
         m_FeederBMotor.SetControl(feeder_velocity_request);
+
+        units::revolutions_per_minute_t roller_bed_velocity = feeder_velocity;
+        controls::VelocityVoltage roller_bed_velocity_request = m_RollerBedVelocityVoltage.WithVelocity(roller_bed_velocity);
+        m_RollerBedMotor.SetControl(roller_bed_velocity_request);
     } else {
         StopFeederMotors();
     }
+}
+
+frc2::CommandPtr ShooterSubsystem::TestDrum()
+{
+    return Run([this] {
+        const units::volt_t kTest = 2_V;
+        m_DrumAMotor.SetVoltage(kTest);
+        m_DrumBMotor.SetVoltage(kTest);
+        m_DrumCMotor.SetVoltage(kTest);
+        m_DrumDMotor.SetVoltage(kTest);
+    });
+}
+
+frc2::CommandPtr ShooterSubsystem::TestFeeder()
+{
+    return Run([this] {
+        const units::volt_t kTest = 2_V;
+        m_FeederAMotor.SetVoltage(kTest);
+        m_FeederBMotor.SetVoltage(kTest);
+    });
+}
+
+frc2::CommandPtr ShooterSubsystem::TestRollerBed()
+{
+    return Run([this] {
+        m_RollerBedMotor.SetVoltage(2_V);
+    });
 }
 
 frc2::CommandPtr ShooterSubsystem::RunDrumAndFeeder()
 {
     return Run([this] {
         TrajectoryInfo parameters = LaunchHelper::GetInstance().GetLaunchParameters();
-        SetGoalSpeeds(parameters.wheel_rpm, EnableFeeder::Yes);
+
+        // @todo Enable setting the speed as provided from the LaunchHelper when we're ready to start shooting into the hub
+        // SetGoalSpeeds(parameters.wheel_rpm, EnableFeeder::Yes);
+        SetGoalSpeeds(kMinimumDrumSpeed, EnableFeeder::Yes);
     });
 }
 
-frc2::CommandPtr ShooterSubsystem::RunDrumOnly()
+frc2::CommandPtr ShooterSubsystem::RunDrumSlowly()
 {
     return Run([this] {
-        TrajectoryInfo parameters = LaunchHelper::GetInstance().GetLaunchParameters();
-        SetGoalSpeeds(parameters.wheel_rpm, EnableFeeder::No);
+        // When we're not intending to launch fuel, keep the drum running at an idle speed to avoid
+        // the current spike and extra time used when spinning it up.
+        SetGoalSpeeds(kMinimumDrumSpeed, EnableFeeder::No);
     });
 }
 
@@ -161,4 +198,5 @@ void ShooterSubsystem::StopFeederMotors()
 {
     m_FeederAMotor.SetControl(m_Stop);
     m_FeederBMotor.SetControl(m_Stop);
+    m_RollerBedMotor.SetControl(m_Stop);
 }

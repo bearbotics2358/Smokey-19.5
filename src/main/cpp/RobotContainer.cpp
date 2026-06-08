@@ -38,10 +38,11 @@ RobotContainer::RobotContainer()
     m_autoChooser = pathplanner::AutoBuilder::buildAutoChooser();
     frc::SmartDashboard::PutData("Auto Mode", &m_autoChooser);
 
-    m_pdh = std::make_shared<frc::PowerDistribution>(1, frc::PowerDistribution::ModuleType::kRev);
-    BearLog::SetPdh(m_pdh);
+    // @todo Re-enable PDH logging after figuring out why it is broken
+    // m_pdh = std::make_shared<frc::PowerDistribution>(1, frc::PowerDistribution::ModuleType::kRev);
+    // BearLog::SetPdh(m_pdh);
 
-    BearLog::SetOptions({BearLogOptions::NTPublish::Yes, BearLogOptions::LogWithNTPrefix::Yes, BearLogOptions::LogExtras::Yes});
+    BearLog::SetOptions({BearLogOptions::NTPublish::Yes, BearLogOptions::LogWithNTPrefix::Yes, BearLogOptions::LogExtras::No});
 
     ConfigureBindings();
 }
@@ -81,6 +82,29 @@ void RobotContainer::ConfigureBindings()
             }
         }));
 
+    driverJoystick.RightBumper().WhileTrue(
+        m_conveyorPivotSubsystem.Extend()
+    ).OnFalse(
+        m_conveyorPivotSubsystem.Stop()
+    );
+    driverJoystick.B().WhileTrue(
+        m_conveyorPivotSubsystem.Stow()
+    ).OnFalse(
+        m_conveyorPivotSubsystem.Stop()
+    );
+
+    driverJoystick.RightTrigger().WhileTrue(
+        frc2::cmd::Parallel(
+            m_shooterSubsystem.RunDrumAndFeeder(),
+            m_conveyorBeltSubsystem.RunBelt()
+        )
+    ).OnFalse(
+        frc2::cmd::Parallel(
+            m_shooterSubsystem.RunDrumSlowly(),
+            m_conveyorBeltSubsystem.Stop()
+        )
+    );
+
     // Idle while the robot is disabled. This ensures the configured
     // neutral mode is applied to the drive motors while disabled.
     frc2::RobotModeTriggers::Disabled().WhileTrue(
@@ -93,21 +117,41 @@ void RobotContainer::ConfigureBindings()
     driverJoystick.Y().OnTrue(m_intakeSubsystem.RunIntakeInReverse());
     driverJoystick.Y().OnFalse(m_intakeSubsystem.StopIntake());
 
-    operatorJoystick.X().OnTrue(m_conveyorPivotSubsystem.Extend());
-    operatorJoystick.X().OnFalse(m_conveyorPivotSubsystem.Stop());
-    operatorJoystick.B().OnTrue(m_conveyorPivotSubsystem.Stow());
-    operatorJoystick.B().OnFalse(m_conveyorPivotSubsystem.Stop());
+    driverJoystick.LeftTrigger().OnTrue(
+        frc2::cmd::Parallel(
+            m_intakeSubsystem.RunIntake(),
+            m_conveyorBeltSubsystem.RunBelt()
+        )
+    ).OnFalse(
+        frc2::cmd::Parallel(
+            m_intakeSubsystem.StopIntake(),
+            m_conveyorBeltSubsystem.Stop()
+        )
+    );
 
-    operatorJoystick.RightTrigger().OnFalse(m_conveyorPivotSubsystem.Stop());
+    operatorJoystick.X().OnTrue(
+        m_conveyorPivotSubsystem.Extend()
+    ).OnFalse(
+        m_conveyorPivotSubsystem.Stop()
+    );
 
-    operatorJoystick.LeftTrigger().OnFalse(m_intakeSubsystem.StopIntake());
-    operatorJoystick.LeftTrigger().OnTrue(m_intakeSubsystem.RunIntake());
+    operatorJoystick.B().OnTrue(
+        m_conveyorPivotSubsystem.Stow()
+    ).OnFalse(
+        m_conveyorPivotSubsystem.Stop()
+    );
 
-    operatorJoystick.LeftBumper().OnTrue(m_intakeSubsystem.RunIntakeInReverse());
-    operatorJoystick.LeftBumper().OnFalse(m_intakeSubsystem.StopIntake());
+    operatorJoystick.LeftTrigger().OnTrue(
+        m_intakeSubsystem.RunIntake()
+    ).OnFalse(
+        m_intakeSubsystem.StopIntake()
+    );
 
-    driverJoystick.LeftTrigger().OnFalse(m_intakeSubsystem.StopIntake());
-    driverJoystick.LeftTrigger().OnTrue(m_intakeSubsystem.RunIntake());
+    operatorJoystick.LeftBumper().OnTrue(
+        m_intakeSubsystem.RunIntakeInReverse()
+    ).OnFalse(
+        m_intakeSubsystem.StopIntake()
+    );
 
     // Run SysId routines when holding back/start and X/Y.
     // Note that each routine should be run exactly once in a single log.
