@@ -23,6 +23,8 @@ public:
         frc2::CommandPtr RunIntakeInReverse();
         frc2::CommandPtr StopIntake();
 
+        frc2::CommandPtr TestIntake();
+
         void Periodic() override;
         void SimulationPeriodic() override;
 private:
