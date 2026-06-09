@@ -25,13 +25,31 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Right Center"
+      "linkedName": "Right Center2"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "pointTowardsZones": [],
-  "eventMarkers": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 0.4,
+        "y": 5.5
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 0.25,
+      "maxWaypointRelativePos": 0.75,
+      "name": "Point Towards Zone"
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "Run Intake",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 1.0,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -42,7 +60,7 @@
   },
   "goalEndState": {
     "velocity": 2.0,
-    "rotation": -72.73817962838727
+    "rotation": 66.4477363271054
   },
   "reversed": false,
   "folder": "Right",
