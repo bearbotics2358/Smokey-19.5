@@ -56,6 +56,7 @@ private:
     subsystems::CommandSwerveDrivetrain m_drivetrain{TunerConstants::CreateDrivetrain(m_RobotType)};
     VisionSubsystem m_VisionSubsystem{&m_drivetrain, VisionConstants::GetLocalizationCameras(&m_drivetrain)};
 
+    static constexpr units::second_t kAutoLaunchTime = 5.0_s;//@todo: test how long it takes to empty a full hopper
 public:
     RobotContainer();
 

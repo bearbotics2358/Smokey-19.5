@@ -21,7 +21,7 @@
       },
       "prevControl": {
         "x": 6.645551782733689,
-        "y": 0.5367172501892992
+        "y": 0.536717250189299
       },
       "nextControl": {
         "x": 7.381415832488721,
@@ -68,7 +68,20 @@
       "name": "Point Towards Zone"
     }
   ],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Extend Pivot",
+      "waypointRelativePos": 0.4238805970149257,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "Run Intake",
+      "waypointRelativePos": 0.5074626865671644,
+      "endWaypointRelativePos": 2.0,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
