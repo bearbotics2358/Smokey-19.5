@@ -181,11 +181,11 @@ void RobotContainer::ConfigurePathPlanner() {
     using namespace pathplanner;
     NamedCommands::registerCommand(
         "Launch",
-        std::move(m_ShooterSubsystem.RunDrumAndFeeder().WithTimeout(kAutoLaunchTime))
+        std::move(m_shooterSubsystem.RunDrumAndFeeder().WithTimeout(kAutoLaunchTime))
     );
     NamedCommands::registerCommand(
         "Standby",
-        std::move(m_ShooterSubsystem.RunDrumOnly())
+        std::move(m_shooterSubsystem.RunDrumOnly())
     );
     NamedCommands::registerCommand(
         "Extend Pivot",
