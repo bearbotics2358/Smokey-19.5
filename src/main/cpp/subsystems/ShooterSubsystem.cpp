@@ -27,12 +27,12 @@ ShooterSubsystem::ShooterSubsystem()
     );
 
     //Sets the default for the drum while enabled to be at the minimum speed, insteading of coming to a stop
-    frc2::RobotModeTriggers::Autonomous().WhileTrue(
+    frc2::RobotModeTriggers::Autonomous().OnTrue(
         RunDrumSlowly()
     );
 
-    frc2::RobotModeTriggers::Teleop().WhileTrue(
-        RunDrumSlowly().IgnoringDisable(false)
+    frc2::RobotModeTriggers::Teleop().OnTrue(
+        RunDrumSlowly()
     );
 }
 
