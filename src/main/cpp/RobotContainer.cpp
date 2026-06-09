@@ -88,9 +88,15 @@ void RobotContainer::ConfigureBindings()
         m_conveyorPivotSubsystem.Stop()
     );
     driverJoystick.B().WhileTrue(
-        m_conveyorPivotSubsystem.Stow()
+        frc2::cmd::Parallel(
+            m_conveyorPivotSubsystem.Stow(),
+            m_conveyorBeltSubsystem.RunBelt()
+        )
     ).OnFalse(
-        m_conveyorPivotSubsystem.Stop()
+        frc2::cmd::Parallel(
+            m_conveyorPivotSubsystem.Stop(),
+            m_conveyorBeltSubsystem.Stop()
+        )
     );
 
     driverJoystick.RightTrigger().WhileTrue(
@@ -136,9 +142,15 @@ void RobotContainer::ConfigureBindings()
     );
 
     operatorJoystick.B().OnTrue(
-        m_conveyorPivotSubsystem.Stow()
+        frc2::cmd::Parallel(
+            m_conveyorPivotSubsystem.Stow(),
+            m_conveyorBeltSubsystem.RunBelt()
+        )
     ).OnFalse(
-        m_conveyorPivotSubsystem.Stop()
+        frc2::cmd::Parallel(
+            m_conveyorPivotSubsystem.Stop(),
+            m_conveyorBeltSubsystem.Stop()
+        )
     );
 
     operatorJoystick.LeftTrigger().OnTrue(
