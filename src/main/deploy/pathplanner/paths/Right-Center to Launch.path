@@ -25,7 +25,7 @@
       },
       "nextControl": {
         "x": 5.010468749999982,
-        "y": 0.7068891059026722
+        "y": 0.7068891059026723
       },
       "isLocked": false,
       "linkedName": null
@@ -84,7 +84,20 @@
       "name": "Point Towards Zone"
     }
   ],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Run Intake",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.4388059701492536,
+      "command": null
+    },
+    {
+      "name": "Stop Intake",
+      "waypointRelativePos": 0.5104477611940299,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
