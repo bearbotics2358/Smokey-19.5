@@ -185,7 +185,7 @@ void RobotContainer::ConfigurePathPlanner() {
     );
     NamedCommands::registerCommand(
         "Standby",
-        std::move(m_shooterSubsystem.RunDrumOnly())
+        std::move(m_shooterSubsystem.RunDrumSlowly())
     );
     NamedCommands::registerCommand(
         "Extend Pivot",
