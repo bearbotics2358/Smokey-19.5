@@ -82,7 +82,9 @@ void RobotContainer::ConfigureBindings()
             }
         }));
 
-    driverJoystick.RightBumper().WhileTrue(
+
+    //TODO: Change the keybind to something that makes sense
+    driverJoystick.POVUp().WhileTrue(
         m_conveyorPivotSubsystem.Extend()
     ).OnFalse(
         m_conveyorPivotSubsystem.Stop()
@@ -93,10 +95,42 @@ void RobotContainer::ConfigureBindings()
         m_conveyorPivotSubsystem.Stop()
     );
 
-    driverJoystick.RightTrigger().WhileTrue(
+    driverJoystick.RightBumper().WhileTrue(
         frc2::cmd::Parallel(
             m_shooterSubsystem.RunDrumAndFeeder(),
             m_conveyorBeltSubsystem.RunBelt()
+        )
+    ).OnFalse(
+        frc2::cmd::Parallel(
+            m_shooterSubsystem.RunDrumSlowly(),
+            m_conveyorBeltSubsystem.Stop()
+        )
+    );
+
+    driverJoystick.RightTrigger().WhileTrue(
+        frc2::cmd::Run(
+            [this] {
+                m_driveManager.TurnToHub();
+                m_drivetrain.SetControl(
+                    drive.WithVelocityX(m_driveManager.xMovement * MaxSpeed)
+                        .WithVelocityY(m_driveManager.yMovement * MaxSpeed)
+                        .WithRotationalRate(m_driveManager.rotMovement * MaxAngularRate)
+                );
+            }
+        )
+        .WithTimeout(1_s)
+        .AndThen(
+            m_shooterSubsystem.RunDrumAndFeeder()
+                .AlongWith(
+                    m_conveyorBeltSubsystem.RunBelt()
+                )
+                .AlongWith(
+                    m_drivetrain.ApplyRequest(
+                        [this]() -> auto&& {
+                            return brake;
+                        }
+                    )
+                )
         )
     ).OnFalse(
         frc2::cmd::Parallel(
