@@ -241,7 +241,7 @@ void RobotContainer::ConfigurePathPlanner() {
     );
     NamedCommands::registerCommand(
         "Retract Pivot",
-        std::move(m_conveyorPivotSubsystem.Stow())//@todo:incorporate running the conveyor belts and intake with this so that they compressed fuel are being constantly fed through
+        std::move(RetractPivotCommand())
     );
     NamedCommands::registerCommand(
         "Run Intake",
