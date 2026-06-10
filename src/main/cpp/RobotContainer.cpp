@@ -88,15 +88,9 @@ void RobotContainer::ConfigureBindings()
         m_conveyorPivotSubsystem.Stop()
     );
     driverJoystick.B().WhileTrue(
-        frc2::cmd::Parallel(
-            m_conveyorPivotSubsystem.Stow(),
-            m_conveyorBeltSubsystem.RunBelt()
-        )
+        RetractPivotCommand()
     ).OnFalse(
-        frc2::cmd::Parallel(
-            m_conveyorPivotSubsystem.Stop(),
-            m_conveyorBeltSubsystem.Stop()
-        )
+        StopPivotCommand()
     );
 
     driverJoystick.RightTrigger().WhileTrue(
@@ -142,15 +136,9 @@ void RobotContainer::ConfigureBindings()
     );
 
     operatorJoystick.B().OnTrue(
-        frc2::cmd::Parallel(
-            m_conveyorPivotSubsystem.Stow(),
-            m_conveyorBeltSubsystem.RunBelt()
-        )
+        RetractPivotCommand()
     ).OnFalse(
-        frc2::cmd::Parallel(
-            m_conveyorPivotSubsystem.Stop(),
-            m_conveyorBeltSubsystem.Stop()
-        )
+        StopPivotCommand()
     );
 
     operatorJoystick.LeftTrigger().OnTrue(
@@ -186,6 +174,20 @@ void RobotContainer::ConfigureBindings()
 frc2::Command* RobotContainer::GetAutonomousCommand()
 {
     return m_autoChooser.GetSelected();
+}
+
+frc2::CommandPtr RobotContainer::RetractPivotCommand() {
+    return frc2::cmd::Parallel(
+        m_conveyorPivotSubsystem.Stow(),
+        m_conveyorBeltSubsystem.RunBelt()
+    );
+}
+
+frc2::CommandPtr RobotContainer::StopPivotCommand() {
+    return frc2::cmd::Parallel(
+        m_conveyorPivotSubsystem.Stop(),
+        m_conveyorBeltSubsystem.Stop()
+    );
 }
 
 void RobotContainer::ConfigurePathPlanner() {
