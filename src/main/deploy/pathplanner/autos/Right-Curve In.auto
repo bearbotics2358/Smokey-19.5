@@ -40,12 +40,6 @@
                 }
               },
               {
-                "type": "named",
-                "data": {
-                  "name": "Retract Pivot"
-                }
-              },
-              {
                 "type": "race",
                 "data": {
                   "commands": [
@@ -59,6 +53,12 @@
                       "type": "named",
                       "data": {
                         "name": "Launch"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Retract Pivot"
                       }
                     }
                   ]
