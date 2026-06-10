@@ -82,7 +82,9 @@ void RobotContainer::ConfigureBindings()
             }
         }));
 
-    driverJoystick.RightBumper().WhileTrue(
+
+    //TODO: Change the keybind to something that makes sense
+    driverJoystick.POVUp().WhileTrue(
         m_conveyorPivotSubsystem.Extend()
     ).OnFalse(
         m_conveyorPivotSubsystem.Stop()
@@ -93,10 +95,42 @@ void RobotContainer::ConfigureBindings()
         StopPivotCommand()
     );
 
-    driverJoystick.RightTrigger().WhileTrue(
+    driverJoystick.RightBumper().WhileTrue(
         frc2::cmd::Parallel(
             m_shooterSubsystem.RunDrumAndFeeder(),
             m_conveyorBeltSubsystem.RunBelt()
+        )
+    ).OnFalse(
+        frc2::cmd::Parallel(
+            m_shooterSubsystem.RunDrumSlowly(),
+            m_conveyorBeltSubsystem.Stop()
+        )
+    );
+
+    driverJoystick.RightTrigger().WhileTrue(
+        frc2::cmd::Run(
+            [this] {
+                m_driveManager.TurnToHub();
+                m_drivetrain.SetControl(
+                    drive.WithVelocityX(m_driveManager.xMovement * MaxSpeed)
+                        .WithVelocityY(m_driveManager.yMovement * MaxSpeed)
+                        .WithRotationalRate(m_driveManager.rotMovement * MaxAngularRate)
+                );
+            }
+        )
+        .WithTimeout(1_s)
+        .AndThen(
+            m_shooterSubsystem.RunDrumAndFeeder()
+                .AlongWith(
+                    m_conveyorBeltSubsystem.RunBelt()
+                )
+                .AlongWith(
+                    m_drivetrain.ApplyRequest(
+                        [this]() -> auto&& {
+                            return brake;
+                        }
+                    )
+                )
         )
     ).OnFalse(
         frc2::cmd::Parallel(
@@ -193,22 +227,28 @@ frc2::CommandPtr RobotContainer::StopPivotCommand() {
 void RobotContainer::ConfigurePathPlanner() {
     const units::second_t kLaunchTime = 12_s;
     using namespace pathplanner;
-    // NamedCommands::registerCommand(
-    //     "Extend Hopper",
-    //     std::move(m_conveyorPivotSubsystem.Extend().WithTimeout(1_s))
-    // );
-    // NamedCommands::registerCommand(
-    //     "Run Intake",
-    //     std::move(m_intakeSubsystem.RunIntake())
-    // );
-    // NamedCommands::registerCommand(
-    //     "Stop Intake",
-    //     std::move(m_intakeSubsystem.StopIntake())
-    // );
-    // NamedCommands::registerCommand(
-    //     "Empty Hopper",
-    //     std::move(
-    //         m_intakeSubsystem.RunIntakeInReverse()
-    //     )
-    // );
+    NamedCommands::registerCommand(
+        "Launch",
+        std::move(m_shooterSubsystem.RunDrumAndFeeder().WithTimeout(kAutoLaunchTime))
+    );
+    NamedCommands::registerCommand(
+        "Standby",
+        std::move(m_shooterSubsystem.RunDrumSlowly())
+    );
+    NamedCommands::registerCommand(
+        "Extend Pivot",
+        std::move(m_conveyorPivotSubsystem.Extend())
+    );
+    NamedCommands::registerCommand(
+        "Retract Pivot",
+        std::move(m_conveyorPivotSubsystem.Stow())//@todo:incorporate running the conveyor belts and intake with this so that they compressed fuel are being constantly fed through
+    );
+    NamedCommands::registerCommand(
+        "Run Intake",
+        std::move(m_intakeSubsystem.RunIntake())
+    );
+    NamedCommands::registerCommand(
+        "Stop Intake",
+        std::move(m_intakeSubsystem.StopIntake())
+    );
 }
