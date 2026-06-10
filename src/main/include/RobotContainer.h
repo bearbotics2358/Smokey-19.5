@@ -65,6 +65,6 @@ private:
     void ConfigureBindings();
     void ConfigurePathPlanner();
 
-    frc2::CommandPtr RobotContainer::RetractPivotCommand();
-    frc2::CommandPtr RobotContainer::StopPivotCommand();
+    frc2::CommandPtr RetractPivotCommand();
+    frc2::CommandPtr StopPivotCommand();
 };
