@@ -64,4 +64,7 @@ public:
 private:
     void ConfigureBindings();
     void ConfigurePathPlanner();
+
+    frc2::CommandPtr RetractPivotCommand();
+    frc2::CommandPtr StopPivotCommand();
 };

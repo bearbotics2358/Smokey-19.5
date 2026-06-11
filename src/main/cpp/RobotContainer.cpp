@@ -90,9 +90,9 @@ void RobotContainer::ConfigureBindings()
         m_conveyorPivotSubsystem.Stop()
     );
     driverJoystick.B().WhileTrue(
-        m_conveyorPivotSubsystem.Stow()
+        RetractPivotCommand()
     ).OnFalse(
-        m_conveyorPivotSubsystem.Stop()
+        StopPivotCommand()
     );
 
     driverJoystick.RightBumper().WhileTrue(
@@ -170,9 +170,9 @@ void RobotContainer::ConfigureBindings()
     );
 
     operatorJoystick.B().OnTrue(
-        m_conveyorPivotSubsystem.Stow()
+        RetractPivotCommand()
     ).OnFalse(
-        m_conveyorPivotSubsystem.Stop()
+        StopPivotCommand()
     );
 
     operatorJoystick.LeftTrigger().OnTrue(
@@ -210,6 +210,20 @@ frc2::Command* RobotContainer::GetAutonomousCommand()
     return m_autoChooser.GetSelected();
 }
 
+frc2::CommandPtr RobotContainer::RetractPivotCommand() {
+    return frc2::cmd::Parallel(
+        m_conveyorPivotSubsystem.Stow(),
+        m_conveyorBeltSubsystem.RunBelt()
+    );
+}
+
+frc2::CommandPtr RobotContainer::StopPivotCommand() {
+    return frc2::cmd::Parallel(
+        m_conveyorPivotSubsystem.Stop(),
+        m_conveyorBeltSubsystem.Stop()
+    );
+}
+
 void RobotContainer::ConfigurePathPlanner() {
     const units::second_t kLaunchTime = 12_s;
     using namespace pathplanner;
@@ -227,7 +241,7 @@ void RobotContainer::ConfigurePathPlanner() {
     );
     NamedCommands::registerCommand(
         "Retract Pivot",
-        std::move(m_conveyorPivotSubsystem.Stow())//@todo:incorporate running the conveyor belts and intake with this so that they compressed fuel are being constantly fed through
+        std::move(RetractPivotCommand())
     );
     NamedCommands::registerCommand(
         "Run Intake",
