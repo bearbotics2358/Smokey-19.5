@@ -82,7 +82,20 @@
       "name": "Point Towards Zone"
     }
   ],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Extend Pivot",
+      "waypointRelativePos": 1.2417910447761173,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "Run Intake",
+      "waypointRelativePos": 1.3253731343283546,
+      "endWaypointRelativePos": 2.0,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
