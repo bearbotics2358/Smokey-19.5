@@ -53,8 +53,6 @@ private:
 
   static constexpr int kRollerBedMotorId = 28;
 
-  static constexpr units::revolutions_per_minute_t kSlowDrumSpeed = 100_rpm;
-
   hardware::TalonFX m_DrumAMotor{kDrumAMotorId};
   hardware::TalonFX m_DrumBMotor{kDrumBMotorId};
   hardware::TalonFX m_DrumCMotor{kDrumCMotorId};
