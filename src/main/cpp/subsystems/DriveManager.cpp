@@ -160,6 +160,56 @@ bool DriveManager::TurnToHub() {
     }
 }
 
+bool DriveManager::SequenceTurnToHub() {
+    
+    
+    BearLog::Log("TurnToHubFinish", true);
+
+
+    frc::Pose2d botPose = m_GetCurrentBotPose();
+    frc::DriverStation::Alliance currentAlliance = frc::DriverStation::GetAlliance().value_or(frc::DriverStation::Alliance::kBlue);
+
+    frc::Pose2d HubPose;
+    units::degree_t offset = 0_deg;
+
+    if (currentAlliance == frc::DriverStation::Alliance::kRed) {
+        HubPose = redHubPose;
+        offset = 180_deg;
+    } else {
+        HubPose = blueHubPose;
+    }
+
+    units::meter_t strafe = botPose.Y() - HubPose.Y();
+    units::meter_t forward = botPose.X() - HubPose.X();
+    units::degree_t angleToHub;
+
+    double rotation;
+    units::degree_t currentDegrees = botPose.Rotation().Degrees();
+    if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
+        angleToHub = units::degree_t(units::radian_t(atan2(strafe.value(), forward.value()))) + offset;
+        rotation = m_rotationalPID.Calculate(currentDegrees.value() + 180, (angleToHub).value());
+    } else {
+        angleToHub = units::degree_t(units::radian_t(atan2(strafe.value(), forward.value()))) + offset;
+        rotation = m_rotationalPID.Calculate(currentDegrees.value(), (angleToHub).value());
+    }
+    rotation = std::clamp(rotation, -1.4, 1.4);
+
+    BearLog::Log("Debugging/Rotation PID", rotation);
+    BearLog::Log("Debugging/RobotAngle", botPose.Rotation().Degrees());
+    BearLog::Log("Debugging/AngleToHub", angleToHub);
+
+
+    xMovement = -m_driverController.GetLeftY();
+    yMovement = -m_driverController.GetLeftX();
+    rotMovement = rotation;
+
+    if (abs(currentDegrees.value() - angleToHub.value()) < kRotationTolerance.value()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 frc2::CommandPtr DriveManager::DriveAlongWall() {
     frc::Pose2d target1{0.8_m, 1_m, frc::Rotation2d(180_deg)};
     frc::Pose2d target2{0.5_m, 0.5_m, frc::Rotation2d(90_deg)};

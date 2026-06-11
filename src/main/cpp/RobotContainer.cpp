@@ -110,14 +110,15 @@ void RobotContainer::ConfigureBindings()
     driverJoystick.RightTrigger().WhileTrue(
         frc2::cmd::Run(
             [this] {
-                m_driveManager.TurnToHub();
-                m_drivetrain.SetControl(
-                    drive.WithVelocityX(m_driveManager.xMovement * MaxSpeed)
-                        .WithVelocityY(m_driveManager.yMovement * MaxSpeed)
-                        .WithRotationalRate(m_driveManager.rotMovement * MaxAngularRate)
-                );
+                if (m_driveManager.SequenceTurnToHub() == false) {
+                    m_drivetrain.SetControl(
+                        drive.WithVelocityX(m_driveManager.xMovement * MaxSpeed)
+                            .WithVelocityY(m_driveManager.yMovement * MaxSpeed)
+                            .WithRotationalRate(m_driveManager.rotMovement * MaxAngularRate)
+                    );
+                }
             }
-        )
+        ).Until([this] {return m_driveManager.SequenceTurnToHub();})
         .WithTimeout(1_s)
         .AndThen(
             m_shooterSubsystem.RunDrumAndFeeder()

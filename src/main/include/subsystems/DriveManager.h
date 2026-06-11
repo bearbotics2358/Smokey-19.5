@@ -27,6 +27,7 @@ public:
     bool GoThroughTrench();
     bool AngleBump();
     bool TurnToHub();
+    bool SequenceTurnToHub();
 
     frc2::CommandPtr DriveAlongWall();
 private:
@@ -50,7 +51,7 @@ private:
     frc::PIDController m_rotationalPID {kRotationP, kRotationI, kRotationD};
 
     static constexpr units::meters_per_second_t kMaxVelocity = 1.5_mps;
-    static constexpr units::radians_per_second_t kMaxAngularVelocity = 1_rad_per_s;
+    static constexpr units::radians_per_second_t kMaxAngularVelocity = 2_rad_per_s;
 
     const units::meter_t kStrafeTolerance = units::meter_t(0.5_in);
     const units::degree_t kRotationTolerance = 2_deg;
