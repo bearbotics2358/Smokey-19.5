@@ -95,7 +95,24 @@
     "valarray": "cpp",
     "*.inc": "cpp",
     "execution": "cpp",
-    "locale": "cpp"
+    "locale": "cpp",
+    "format": "cpp",
+    "ios": "cpp",
+    "xfacet": "cpp",
+    "xhash": "cpp",
+    "xiosbase": "cpp",
+    "xlocale": "cpp",
+    "xlocbuf": "cpp",
+    "xlocinfo": "cpp",
+    "xlocmes": "cpp",
+    "xlocmon": "cpp",
+    "xlocnum": "cpp",
+    "xloctime": "cpp",
+    "xmemory": "cpp",
+    "xstring": "cpp",
+    "xtr1common": "cpp",
+    "xtree": "cpp",
+    "xutility": "cpp"
   },
   "wpilib.skipTests": true
 }

@@ -21,7 +21,7 @@ ConveyorPivotSubsystem::ConveyorPivotSubsystem()
 
     m_ExtenderHardStop = frc2::Trigger([this] {
         return (units::math::abs(m_extenderMotor.GetVelocity().GetValue()) < 1_tps &&
-            units::math::abs(m_extenderMotor.GetTorqueCurrent().GetValue()) > 30_A);
+            units::math::abs(m_extenderMotor.GetTorqueCurrent().GetValue()) > 100_A);
     }).Debounce(0.1_s);
 
     // Be sure to stop all the motors if the robot is disabled while it's running
