@@ -37,10 +37,10 @@ bool DriveManager::GoThroughTrench() {
         units::degree_t m_RotationSetpoint;
         if (inTrenchZone == RobotZoneHelper::TrenchZone::InRightTrenchZone) {
             m_SetpointDistance = kRightSetpointDistance;
-            m_RotationSetpoint = -90_deg;
+            m_RotationSetpoint = 90_deg;
         } else {
             m_SetpointDistance = kLeftSetpointDistance;
-            m_RotationSetpoint = 90_deg;
+            m_RotationSetpoint = -90_deg;
         }
 
         BearLog::Log("DriverAssist/RotationSetpoint", m_RotationSetpoint);
@@ -82,10 +82,10 @@ bool DriveManager::AngleBump() {
 
         if (inBumpZone == RobotZoneHelper::BumpZone::InRightBumpZone) {
             m_SetpointDistance = kRightSetpointDistance;
-            m_RotationSetpoint = -90_deg;
+            m_RotationSetpoint = 90_deg;
         } else {
             m_SetpointDistance = kLeftSetpointDistance;
-            m_RotationSetpoint = 90_deg;
+            m_RotationSetpoint = -90_deg;
         }
 
         BearLog::Log("DriverAssist/RotationSetpoint", m_RotationSetpoint);
