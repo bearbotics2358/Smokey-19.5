@@ -170,7 +170,7 @@ bool DriveManager::SequenceTurnToHub() {
 
     if (currentAlliance == frc::DriverStation::Alliance::kRed) {
         HubPose = redHubPose;
-        offset = 180_deg;
+        offset = 0_deg;
     } else {
         HubPose = blueHubPose;
     }
@@ -183,7 +183,7 @@ bool DriveManager::SequenceTurnToHub() {
     units::degree_t currentDegrees = botPose.Rotation().Degrees();
     if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
         angleToHub = units::degree_t(units::radian_t(atan2(strafe.value(), forward.value()))) + offset;
-        rotation = m_rotationalPID.Calculate(currentDegrees.value(), (angleToHub).value());
+        rotation = m_rotationalPID.Calculate(currentDegrees.value() + 180, (angleToHub).value());
     } else {
         angleToHub = units::degree_t(units::radian_t(atan2(strafe.value(), forward.value()))) + offset;
         rotation = m_rotationalPID.Calculate(currentDegrees.value() + 180, (angleToHub).value());
