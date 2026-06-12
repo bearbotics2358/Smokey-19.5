@@ -14,7 +14,7 @@ using namespace ctre::phoenix6;
 
 // Spinning up the drum takes time and also spikes the current usage. To avoid starting and stopping the
 // drum throughout the match, always keep it running at a minimum of this speed to keep current usage in check.
-const units::revolutions_per_minute_t kMinimumDrumSpeed = 900_rpm;
+const units::revolutions_per_minute_t kMinimumDrumSpeed = 1500_rpm;
 
 ShooterSubsystem::ShooterSubsystem()
 {
@@ -41,7 +41,7 @@ void ShooterSubsystem::ConfigureDrumMotors()
     configs::TalonFXConfiguration configs{};
 
     // @todo Find out if this is a good stator current limit. It may need to be higher or lower depending on testing.
-    configs.CurrentLimits.StatorCurrentLimit = 80_A;
+    configs.CurrentLimits.StatorCurrentLimit = 100_A;
     configs.CurrentLimits.StatorCurrentLimitEnable = true;
 
     // @todo Find out if this is a good supply current limit. It may need to be higher or lower depending on testing.
@@ -52,7 +52,7 @@ void ShooterSubsystem::ConfigureDrumMotors()
 
     configs.MotorOutput.Inverted = signals::InvertedValue::CounterClockwise_Positive;
 
-    configs.Slot0.kP = 0.4;
+    configs.Slot0.kP = 0.45;
     configs.Slot0.kI = 0.0;
     configs.Slot0.kD = 0.0;
     configs.Slot0.kV = 0.12;
@@ -99,6 +99,7 @@ void ShooterSubsystem::Periodic()
     BearLog::Log("Shooter/Drum/SetPointSpeed", units::revolutions_per_minute_t(m_DrumVelocityVoltage.Velocity));
     BearLog::Log("Shooter/Feeder/Speed", GetFeederSpeed());
     BearLog::Log("Shooter/Feeder/SetPointSpeed", units::revolutions_per_minute_t(m_FeederVelocityVoltage.Velocity));
+    LaunchHelper::GetInstance().GetLaunchParameters();
 }
 
 void ShooterSubsystem::SimulationPeriodic()
@@ -117,7 +118,7 @@ units::revolutions_per_minute_t ShooterSubsystem::GetFeederSpeed()
 
 void ShooterSubsystem::SetGoalSpeeds(units::revolutions_per_minute_t drumSpeed, EnableFeeder enableFeeder)
 {
-    units::revolutions_per_minute_t drum_speed_to_set = units::math::max(drumSpeed, kMinimumDrumSpeed);
+    units::revolutions_per_minute_t drum_speed_to_set = drumSpeed; //units::math::max(drumSpeed, kMinimumDrumSpeed);
 
     controls::VelocityVoltage drum_velocity_request = m_DrumVelocityVoltage.WithVelocity(drum_speed_to_set);
     m_DrumAMotor.SetControl(drum_velocity_request);
@@ -172,9 +173,8 @@ frc2::CommandPtr ShooterSubsystem::RunDrumAndFeeder()
     return Run([this] {
         TrajectoryInfo parameters = LaunchHelper::GetInstance().GetLaunchParameters();
 
-        // @todo Enable setting the speed as provided from the LaunchHelper when we're ready to start shooting into the hub
-        // SetGoalSpeeds(parameters.wheel_rpm, EnableFeeder::Yes);
-        SetGoalSpeeds(kMinimumDrumSpeed, EnableFeeder::Yes);
+        SetGoalSpeeds(parameters.wheel_rpm, EnableFeeder::Yes);
+        //SetGoalSpeeds(kMinimumDrumSpeed, EnableFeeder::Yes);
     });
 }
 

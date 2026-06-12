@@ -29,7 +29,7 @@ void LaunchHelper::Init(std::function<frc::ChassisSpeeds()> robotSpeedsSupplier,
     m_TrajectoryCalc.init();
     m_TrajectoryCalc.set_constant_shooter_elevation(true);
     m_TrajectoryCalc.set_shoot_on_the_move_enabled(false);
-    m_TrajectoryCalc.set_ball_compression(1.0);
+    m_TrajectoryCalc.set_ball_compression(0.9);
 
     m_Initialized = true;
 }
@@ -70,7 +70,7 @@ TrajectoryInfo LaunchHelper::GetLaunchParameters() {
     // m_Cache.wheel_rpm += (1500_rpm * units::foot_t(distance_to_hub_center).value
 
     // BearLog::Log("LaunchHelper/Hood Angle", m_Cache.elevation_angle);
-    // BearLog::Log("LaunchHelper/Wheel RPM", m_Cache.wheel_rpm);
+    BearLog::Log("LaunchHelper/Wheel RPM", m_Cache.wheel_rpm);
     // BearLog::Log("LaunchHelper/Turret Angle", m_Cache.turret_angle);
 
     if (frc::RobotBase::IsSimulation()) {

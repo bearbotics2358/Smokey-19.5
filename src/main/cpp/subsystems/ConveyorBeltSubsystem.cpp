@@ -52,8 +52,7 @@ frc2::CommandPtr ConveyorBeltSubsystem::TestBelt() {
 
 frc2::CommandPtr ConveyorBeltSubsystem::RunBelt() {
     return RunOnce([this] {
-        // @todo Re-enable this when the conveyor belt is fixed!
-        // m_beltMotor.SetControl(m_BeltVoltage.WithVelocity(1500_rpm));
+        m_beltMotor.SetControl(m_BeltVoltage.WithVelocity(3000_rpm));
     });
 }
 

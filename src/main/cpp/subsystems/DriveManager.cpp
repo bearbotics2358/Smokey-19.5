@@ -136,10 +136,10 @@ bool DriveManager::TurnToHub() {
         units::degree_t currentDegrees = botPose.Rotation().Degrees();
         if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
             angleToHub = units::degree_t(units::radian_t(atan2(strafe.value(), forward.value()))) + offset;
-            rotation = m_rotationalPID.Calculate(currentDegrees.value() + 180, (angleToHub).value());
+            rotation = m_rotationalPID.Calculate(currentDegrees.value(), (angleToHub).value());
         } else {
             angleToHub = units::degree_t(units::radian_t(atan2(strafe.value(), forward.value()))) + offset;
-            rotation = m_rotationalPID.Calculate(currentDegrees.value(), (angleToHub).value());
+            rotation = m_rotationalPID.Calculate(currentDegrees.value() + 180, (angleToHub).value());
         }
         rotation = std::clamp(rotation, -1.0, 1.0);
 
@@ -187,12 +187,12 @@ bool DriveManager::SequenceTurnToHub() {
     units::degree_t currentDegrees = botPose.Rotation().Degrees();
     if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
         angleToHub = units::degree_t(units::radian_t(atan2(strafe.value(), forward.value()))) + offset;
-        rotation = m_rotationalPID.Calculate(currentDegrees.value() + 180, (angleToHub).value());
+        rotation = m_rotationalPID.Calculate(currentDegrees.value(), (angleToHub).value());
     } else {
         angleToHub = units::degree_t(units::radian_t(atan2(strafe.value(), forward.value()))) + offset;
-        rotation = m_rotationalPID.Calculate(currentDegrees.value(), (angleToHub).value());
+        rotation = m_rotationalPID.Calculate(currentDegrees.value() + 180, (angleToHub).value());
     }
-    rotation = std::clamp(rotation, -1.4, 1.4);
+    rotation = std::clamp(rotation, -1.0, 1.0);
 
     BearLog::Log("Debugging/Rotation PID", rotation);
     BearLog::Log("Debugging/RobotAngle", botPose.Rotation().Degrees());
@@ -203,7 +203,7 @@ bool DriveManager::SequenceTurnToHub() {
     yMovement = -m_driverController.GetLeftX();
     rotMovement = rotation;
 
-    if (abs(currentDegrees.value() - angleToHub.value()) < kRotationTolerance.value()) {
+    if (abs(currentDegrees.value() + 180 - angleToHub.value()) < kRotationTolerance.value()) {
         return true;
     } else {
         return false;

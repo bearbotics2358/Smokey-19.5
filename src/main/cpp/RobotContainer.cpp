@@ -119,7 +119,7 @@ void RobotContainer::ConfigureBindings()
                 }
             }
         ).Until([this] {return m_driveManager.SequenceTurnToHub();})
-        .WithTimeout(1_s)
+        .WithTimeout(2_s)
         .AndThen(
             m_shooterSubsystem.RunDrumAndFeeder()
                 .AlongWith(
@@ -204,6 +204,7 @@ void RobotContainer::ConfigureBindings()
     operatorJoystick.POVDown().WhileTrue(m_FMSSubsystem.ManualShift("Blue"));
 
     driverJoystick.POVLeft().WhileTrue(m_driveManager.DriveAlongWall());
+    driverJoystick.POVRight().OnTrue(m_shooterSubsystem.DisableDrumAndFeeder());
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand()
