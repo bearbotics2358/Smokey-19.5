@@ -28,6 +28,7 @@ public:
   void SimulationPeriodic() override;
 
   frc2::CommandPtr RunDrumAndFeeder();
+  frc2::CommandPtr RunDrumToFeed();
   frc2::CommandPtr DisableDrumAndFeeder();
   frc2::CommandPtr RunDrumSlowly();
 
