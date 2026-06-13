@@ -118,7 +118,7 @@ void RobotContainer::ConfigureBindings()
                     );
                 }
             }
-        ).Until([this] {return m_driveManager.SequenceTurnToHub();})
+        ).Until([this] {return (m_driveManager.SequenceTurnToHub() || (RobotZoneHelper::isRobotInNeutralZone(m_drivetrain.GetState().Pose)));})
         .WithTimeout(2_s)
         .AndThen(
             m_shooterSubsystem.RunDrumAndFeeder()
@@ -132,6 +132,23 @@ void RobotContainer::ConfigureBindings()
                         }
                     )
                 )
+        ).Unless([this] {return RobotZoneHelper::isRobotInNeutralZone(m_drivetrain.GetState().Pose);}
+    ).AndThen(
+            m_drivetrain.ApplyRequest([this]() -> auto&& {
+                return drive.WithVelocityX(m_driveManager.xMovement * MaxSpeed)
+                            .WithVelocityY(m_driveManager.yMovement * MaxSpeed)
+                            .WithRotationalRate(m_driveManager.rotMovement * MaxAngularRate);
+            }).Until([this] {
+                return m_driveManager.SequenceTurnToAlliance() ||
+                    RobotZoneHelper::isRobotInMyAllianceZone(
+                        m_drivetrain.GetState().Pose);
+            }).OnlyIf([this] {return RobotZoneHelper::isRobotInNeutralZone(m_drivetrain.GetState().Pose);})
+        ).AndThen(
+            m_shooterSubsystem.RunDrumToFeed().AlongWith(m_drivetrain.ApplyRequest([this]() -> auto&& {
+                return drive.WithVelocityX(-driverJoystick.GetLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .WithVelocityY(-driverJoystick.GetLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .WithRotationalRate(-driverJoystick.GetRightX() * MaxAngularRate); // Drive counterclockwise with negative X (left)
+            })).OnlyIf([this] {return RobotZoneHelper::isRobotInNeutralZone(m_drivetrain.GetState().Pose);})
         )
     ).OnFalse(
         frc2::cmd::Parallel(

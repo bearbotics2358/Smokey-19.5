@@ -190,6 +190,13 @@ frc2::CommandPtr ShooterSubsystem::RunDrumAndFeeder()
     });
 }
 
+frc2::CommandPtr ShooterSubsystem::RunDrumToFeed()
+{
+    return Run([this] {
+        SetGoalSpeeds(2250_rpm, EnableFeeder::Yes);
+    });
+}
+
 frc2::CommandPtr ShooterSubsystem::RunDrumSlowly()
 {
     return Run([this] {
