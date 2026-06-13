@@ -55,7 +55,7 @@ private:
     static constexpr units::radians_per_second_t kMaxAngularVelocity = 2_rad_per_s;
 
     const units::meter_t kStrafeTolerance = units::meter_t(0.5_in);
-    const units::degree_t kRotationTolerance = 3_deg;
+    const units::degree_t kRotationTolerance = 5_deg;
 
     const units::meter_t kLeftSetpointDistance = units::meter_t(296.47_in);
     const units::meter_t kRightSetpointDistance = units::meter_t(21.22_in);
