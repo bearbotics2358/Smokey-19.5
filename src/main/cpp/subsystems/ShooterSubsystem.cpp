@@ -118,7 +118,7 @@ units::revolutions_per_minute_t ShooterSubsystem::GetFeederSpeed()
 
 void ShooterSubsystem::SetGoalSpeeds(units::revolutions_per_minute_t drumSpeed, EnableFeeder enableFeeder)
 {
-    units::revolutions_per_minute_t drum_speed_to_set = drumSpeed; //units::math::max(drumSpeed, kMinimumDrumSpeed);
+    units::revolutions_per_minute_t drum_speed_to_set = drumSpeed;
 
     controls::VelocityVoltage drum_velocity_request = m_DrumVelocityVoltage.WithVelocity(drum_speed_to_set);
     m_DrumAMotor.SetControl(drum_velocity_request);
@@ -128,7 +128,7 @@ void ShooterSubsystem::SetGoalSpeeds(units::revolutions_per_minute_t drumSpeed, 
 
     if (EnableFeeder::Yes == enableFeeder) {
         // Using a constant speed for the feeder velocity since it shouldn't need to change
-        units::revolutions_per_minute_t feeder_velocity = drum_speed_to_set * 1.5;
+        units::revolutions_per_minute_t feeder_velocity = drum_speed_to_set * 2.4;
         controls::VelocityVoltage feeder_velocity_request = m_FeederVelocityVoltage.WithVelocity(feeder_velocity);
         m_FeederAMotor.SetControl(feeder_velocity_request);
         m_FeederBMotor.SetControl(feeder_velocity_request);
@@ -174,7 +174,6 @@ frc2::CommandPtr ShooterSubsystem::RunDrumAndFeeder()
         TrajectoryInfo parameters = LaunchHelper::GetInstance().GetLaunchParameters();
 
         SetGoalSpeeds(parameters.wheel_rpm, EnableFeeder::Yes);
-        //SetGoalSpeeds(kMinimumDrumSpeed, EnableFeeder::Yes);
     });
 }
 
