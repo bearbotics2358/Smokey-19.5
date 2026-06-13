@@ -35,7 +35,12 @@ public:
   frc2::CommandPtr TestFeeder();
   frc2::CommandPtr TestRollerBed();
 
+  frc2::CommandPtr IncreaseDrumRPM();
+  frc2::CommandPtr DecreaseDrumRPM();
+
 private:
+  units::revolutions_per_minute_t rpmOffset;
+
   void ConfigureDrumMotors();
   void ConfigureFeederMotors();
 

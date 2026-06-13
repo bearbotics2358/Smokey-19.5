@@ -200,8 +200,8 @@ void RobotContainer::ConfigureBindings()
 
     m_drivetrain.RegisterTelemetry([this](auto const &state) { logger.Telemeterize(state); });
 
-    operatorJoystick.POVUp().WhileTrue(m_FMSSubsystem.ManualShift("Red"));
-    operatorJoystick.POVDown().WhileTrue(m_FMSSubsystem.ManualShift("Blue"));
+    operatorJoystick.POVUp().OnTrue(m_shooterSubsystem.IncreaseDrumRPM());
+    operatorJoystick.POVDown().OnTrue(m_shooterSubsystem.DecreaseDrumRPM());
 
     driverJoystick.POVLeft().WhileTrue(m_driveManager.DriveAlongWall());
     driverJoystick.POVRight().OnTrue(m_shooterSubsystem.DisableDrumAndFeeder());
