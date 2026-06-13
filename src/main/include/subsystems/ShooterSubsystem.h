@@ -39,7 +39,7 @@ public:
   frc2::CommandPtr DecreaseDrumRPM();
 
 private:
-  units::revolutions_per_minute_t rpmOffset;
+  units::revolutions_per_minute_t m_rpmOffset;
 
   void ConfigureDrumMotors();
   void ConfigureFeederMotors();

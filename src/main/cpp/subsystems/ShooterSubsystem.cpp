@@ -118,13 +118,13 @@ units::revolutions_per_minute_t ShooterSubsystem::GetFeederSpeed()
 
 frc2::CommandPtr ShooterSubsystem::IncreaseDrumRPM() {
     return frc2::cmd::RunOnce([this] {
-        rpmOffset += 50_rpm;
+        m_rpmOffset += 50_rpm;
     });
 }
 
 frc2::CommandPtr ShooterSubsystem::DecreaseDrumRPM() {
     return frc2::cmd::RunOnce([this] {
-        rpmOffset -= 50_rpm;
+        m_rpmOffset -= 50_rpm;
     });
 }
 
@@ -132,7 +132,7 @@ void ShooterSubsystem::SetGoalSpeeds(units::revolutions_per_minute_t drumSpeed, 
 {
     units::revolutions_per_minute_t drum_speed_to_set = drumSpeed; //units::math::max(drumSpeed, kMinimumDrumSpeed);
 
-    controls::VelocityVoltage drum_velocity_request = m_DrumVelocityVoltage.WithVelocity(drum_speed_to_set + rpmOffset);
+    controls::VelocityVoltage drum_velocity_request = m_DrumVelocityVoltage.WithVelocity(drum_speed_to_set + m_rpmOffset);
     m_DrumAMotor.SetControl(drum_velocity_request);
     m_DrumBMotor.SetControl(drum_velocity_request);
     m_DrumCMotor.SetControl(drum_velocity_request);
