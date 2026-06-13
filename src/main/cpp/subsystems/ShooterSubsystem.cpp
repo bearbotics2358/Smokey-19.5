@@ -27,9 +27,9 @@ ShooterSubsystem::ShooterSubsystem()
     );
 
     //Sets the default for the drum while enabled to be at the minimum speed, insteading of coming to a stop
-    frc2::RobotModeTriggers::Autonomous().OnTrue(
-        RunDrumSlowly()
-    );
+    // frc2::RobotModeTriggers::Autonomous().OnTrue(
+    //     RunDrumSlowly()
+    // );
 
     frc2::RobotModeTriggers::Teleop().OnTrue(
         RunDrumSlowly()
@@ -180,7 +180,7 @@ frc2::CommandPtr ShooterSubsystem::RunDrumAndFeeder()
 
 frc2::CommandPtr ShooterSubsystem::RunDrumSlowly()
 {
-    return Run([this] {
+    return RunOnce([this] {
         // When we're not intending to launch fuel, keep the drum running at an idle speed to avoid
         // the current spike and extra time used when spinning it up.
         SetGoalSpeeds(kMinimumDrumSpeed, EnableFeeder::No);

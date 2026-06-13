@@ -119,7 +119,7 @@ void RobotContainer::ConfigureBindings()
                 }
             }
         ).Until([this] {return m_driveManager.SequenceTurnToHub();})
-        .WithTimeout(2_s)
+        .WithTimeout(1_s)
         .AndThen(
             m_shooterSubsystem.RunDrumAndFeeder()
                 .AlongWith(
