@@ -116,11 +116,23 @@ units::revolutions_per_minute_t ShooterSubsystem::GetFeederSpeed()
     return m_FeederAMotor.GetVelocity().GetValue();
 }
 
+frc2::CommandPtr ShooterSubsystem::IncreaseDrumRPM() {
+    return frc2::cmd::RunOnce([this] {
+        m_rpmOffset += 50_rpm;
+    });
+}
+
+frc2::CommandPtr ShooterSubsystem::DecreaseDrumRPM() {
+    return frc2::cmd::RunOnce([this] {
+        m_rpmOffset -= 50_rpm;
+    });
+}
+
 void ShooterSubsystem::SetGoalSpeeds(units::revolutions_per_minute_t drumSpeed, EnableFeeder enableFeeder)
 {
     units::revolutions_per_minute_t drum_speed_to_set = drumSpeed;
 
-    controls::VelocityVoltage drum_velocity_request = m_DrumVelocityVoltage.WithVelocity(drum_speed_to_set);
+    controls::VelocityVoltage drum_velocity_request = m_DrumVelocityVoltage.WithVelocity(drum_speed_to_set + m_rpmOffset);
     m_DrumAMotor.SetControl(drum_velocity_request);
     m_DrumBMotor.SetControl(drum_velocity_request);
     m_DrumCMotor.SetControl(drum_velocity_request);
@@ -174,6 +186,13 @@ frc2::CommandPtr ShooterSubsystem::RunDrumAndFeeder()
         TrajectoryInfo parameters = LaunchHelper::GetInstance().GetLaunchParameters();
 
         SetGoalSpeeds(parameters.wheel_rpm, EnableFeeder::Yes);
+    });
+}
+
+frc2::CommandPtr ShooterSubsystem::RunDrumToFeed()
+{
+    return Run([this] {
+        SetGoalSpeeds(2250_rpm, EnableFeeder::Yes);
     });
 }
 

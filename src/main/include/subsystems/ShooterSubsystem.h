@@ -28,6 +28,7 @@ public:
   void SimulationPeriodic() override;
 
   frc2::CommandPtr RunDrumAndFeeder();
+  frc2::CommandPtr RunDrumToFeed();
   frc2::CommandPtr DisableDrumAndFeeder();
   frc2::CommandPtr RunDrumSlowly();
 
@@ -35,7 +36,12 @@ public:
   frc2::CommandPtr TestFeeder();
   frc2::CommandPtr TestRollerBed();
 
+  frc2::CommandPtr IncreaseDrumRPM();
+  frc2::CommandPtr DecreaseDrumRPM();
+
 private:
+  units::revolutions_per_minute_t m_rpmOffset;
+
   void ConfigureDrumMotors();
   void ConfigureFeederMotors();
 

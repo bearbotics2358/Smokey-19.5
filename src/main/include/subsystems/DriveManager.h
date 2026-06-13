@@ -28,7 +28,8 @@ public:
     bool AngleBump();
     bool TurnToHub();
     bool SequenceTurnToHub();
-
+    bool SequenceTurnToAlliance();
+    
     frc2::CommandPtr DriveAlongWall();
 private:
     frc::Pose2d blueHubPose = frc::Pose2d(4.625594_m, 4.034663_m, frc::Rotation2d{});
