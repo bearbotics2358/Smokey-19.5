@@ -39,10 +39,10 @@ RobotContainer::RobotContainer()
     frc::SmartDashboard::PutData("Auto Mode", &m_autoChooser);
 
     // @todo Re-enable PDH logging after figuring out why it is broken
-    // m_pdh = std::make_shared<frc::PowerDistribution>(1, frc::PowerDistribution::ModuleType::kRev);
-    // BearLog::SetPdh(m_pdh);
+    m_pdh = std::make_shared<frc::PowerDistribution>(1, frc::PowerDistribution::ModuleType::kRev);
+    BearLog::SetPdh(m_pdh);
 
-    BearLog::SetOptions({BearLogOptions::NTPublish::Yes, BearLogOptions::LogWithNTPrefix::Yes, BearLogOptions::LogExtras::No});
+    BearLog::SetOptions({BearLogOptions::NTPublish::Yes, BearLogOptions::LogWithNTPrefix::Yes, BearLogOptions::LogExtras::Yes});
 
     ConfigureBindings();
 }
@@ -119,7 +119,7 @@ void RobotContainer::ConfigureBindings()
                 }
             }
         ).Until([this] {return (m_driveManager.SequenceTurnToHub() || (RobotZoneHelper::isRobotInNeutralZone(m_drivetrain.GetState().Pose)));})
-        .WithTimeout(2_s)
+        .WithTimeout(1_s)
         .AndThen(
             m_shooterSubsystem.RunDrumAndFeeder()
                 .AlongWith(
@@ -254,7 +254,7 @@ void RobotContainer::ConfigurePathPlanner() {
     );
     NamedCommands::registerCommand(
         "Standby",
-        std::move(m_shooterSubsystem.RunDrumSlowly())
+        std::move(m_shooterSubsystem.RunDrumSlowly().AlongWith(m_conveyorBeltSubsystem.Stop()))
     );
     NamedCommands::registerCommand(
         "Extend Pivot",
