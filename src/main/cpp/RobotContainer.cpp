@@ -231,7 +231,7 @@ frc2::Command* RobotContainer::GetAutonomousCommand()
 
 frc2::CommandPtr RobotContainer::RetractPivotCommand() {
     return frc2::cmd::Parallel(
-        m_conveyorPivotSubsystem.Stow(),
+        m_conveyorPivotSubsystem.RetractSlow(),
         m_conveyorBeltSubsystem.RunBelt(),
         m_intakeSubsystem.RunIntake()
     );

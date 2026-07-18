@@ -72,7 +72,7 @@ frc2::CommandPtr ConveyorPivotSubsystem::ExtendSlow() {
 
 frc2::CommandPtr ConveyorPivotSubsystem::RetractSlow() {
     return Run([this] {
-        m_extenderMotor.SetVoltage(-0.5_V);
+        m_extenderMotor.SetVoltage(-0.75_V);
     });
 }
 
