@@ -254,7 +254,7 @@ void RobotContainer::ConfigurePathPlanner() {
     );
     NamedCommands::registerCommand(
         "Standby",
-        std::move(m_shooterSubsystem.RunDrumSlowly())
+        std::move(m_shooterSubsystem.RunDrumSlowly().AlongWith(m_conveyorBeltSubsystem.Stop()))
     );
     NamedCommands::registerCommand(
         "Extend Pivot",

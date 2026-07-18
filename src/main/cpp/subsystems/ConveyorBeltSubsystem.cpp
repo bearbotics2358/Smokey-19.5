@@ -21,11 +21,11 @@ void ConveyorBeltSubsystem::ConfigureBeltMotor() {
     configs::TalonFXConfiguration config{};
 
     // @todo Find out if this is a good stator current limit. It may need to be higher or lower depending on testing.
-    config.CurrentLimits.StatorCurrentLimit = 80_A;
+    config.CurrentLimits.StatorCurrentLimit = 50_A;
     config.CurrentLimits.StatorCurrentLimitEnable = true;
 
     // @todo Find out if this is a good supply current limit. It may need to be higher or lower depending on testing.
-    config.CurrentLimits.SupplyCurrentLimit = 50_A;
+    config.CurrentLimits.SupplyCurrentLimit = 30_A;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     config.MotorOutput.NeutralMode = signals::NeutralModeValue::Coast;

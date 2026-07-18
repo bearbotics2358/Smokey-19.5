@@ -27,9 +27,12 @@ ShooterSubsystem::ShooterSubsystem()
     );
 
     //Sets the default for the drum while enabled to be at the minimum speed, insteading of coming to a stop
+    // @todo For some reason, running this Autonomous().OnTrue() interferes with the ability to drive in auto
     // frc2::RobotModeTriggers::Autonomous().OnTrue(
     //     RunDrumSlowly()
     // );
+
+    m_rpmOffset = 0_rpm;
 
     frc2::RobotModeTriggers::Teleop().OnTrue(
         RunDrumSlowly()
@@ -41,7 +44,7 @@ void ShooterSubsystem::ConfigureDrumMotors()
     configs::TalonFXConfiguration configs{};
 
     // @todo Find out if this is a good stator current limit. It may need to be higher or lower depending on testing.
-    configs.CurrentLimits.StatorCurrentLimit = 100_A;
+    configs.CurrentLimits.StatorCurrentLimit = 80_A;
     configs.CurrentLimits.StatorCurrentLimitEnable = true;
 
     // @todo Find out if this is a good supply current limit. It may need to be higher or lower depending on testing.
@@ -70,11 +73,11 @@ void ShooterSubsystem::ConfigureFeederMotors()
     configs::TalonFXConfiguration feeder_configs{};
 
     // @todo Find out if this is a good stator current limit. It may need to be higher or lower depending on testing.
-    feeder_configs.CurrentLimits.StatorCurrentLimit = 80_A;
+    feeder_configs.CurrentLimits.StatorCurrentLimit = 60_A;
     feeder_configs.CurrentLimits.StatorCurrentLimitEnable = true;
 
     // @todo Find out if this is a good supply current limit. It may need to be higher or lower depending on testing.
-    feeder_configs.CurrentLimits.SupplyCurrentLimit = 50_A;
+    feeder_configs.CurrentLimits.SupplyCurrentLimit = 30_A;
     feeder_configs.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     feeder_configs.MotorOutput.NeutralMode = signals::NeutralModeValue::Coast;
@@ -95,6 +98,23 @@ void ShooterSubsystem::ConfigureFeederMotors()
 
 void ShooterSubsystem::Periodic()
 {
+    BearLog::Log("Shooter/FeederA/Current", m_FeederAMotor.GetTorqueCurrent().GetValue());
+    BearLog::Log("Shooter/FeederA/Voltage", m_FeederAMotor.GetMotorVoltage().GetValue());
+
+    BearLog::Log("Shooter/FeederB/Current", m_FeederBMotor.GetTorqueCurrent().GetValue());
+    BearLog::Log("Shooter/FeederB/Voltage", m_FeederBMotor.GetMotorVoltage().GetValue());
+
+    BearLog::Log("Shooter/DrumA/Current", m_DrumAMotor.GetTorqueCurrent().GetValue());
+    BearLog::Log("Shooter/DrumA/Voltage", m_DrumAMotor.GetMotorVoltage().GetValue());
+    BearLog::Log("Shooter/DrumB/Current", m_DrumBMotor.GetTorqueCurrent().GetValue());
+    BearLog::Log("Shooter/DrumB/Voltage", m_DrumBMotor.GetMotorVoltage().GetValue());
+
+    BearLog::Log("Shooter/DrumC/Current", m_DrumCMotor.GetTorqueCurrent().GetValue());
+    BearLog::Log("Shooter/DrumC/Voltage", m_DrumCMotor.GetMotorVoltage().GetValue());
+    BearLog::Log("Shooter/DrumD/Current", m_DrumDMotor.GetTorqueCurrent().GetValue());
+    BearLog::Log("Shooter/Drumd/Voltage", m_DrumDMotor.GetMotorVoltage().GetValue());
+
+
     BearLog::Log("Shooter/Drum/Speed", GetDrumSpeed());
     BearLog::Log("Shooter/Drum/SetPointSpeed", units::revolutions_per_minute_t(m_DrumVelocityVoltage.Velocity));
     BearLog::Log("Shooter/Feeder/Speed", GetFeederSpeed());
@@ -140,7 +160,7 @@ void ShooterSubsystem::SetGoalSpeeds(units::revolutions_per_minute_t drumSpeed, 
 
     if (EnableFeeder::Yes == enableFeeder) {
         // Using a constant speed for the feeder velocity since it shouldn't need to change
-        units::revolutions_per_minute_t feeder_velocity = drum_speed_to_set * 2.4;
+        units::revolutions_per_minute_t feeder_velocity = drum_speed_to_set * 1.5;
         controls::VelocityVoltage feeder_velocity_request = m_FeederVelocityVoltage.WithVelocity(feeder_velocity);
         m_FeederAMotor.SetControl(feeder_velocity_request);
         m_FeederBMotor.SetControl(feeder_velocity_request);

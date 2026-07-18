@@ -29,18 +29,15 @@ void IntakeSubsystem::ConfigureIntakeMotor() {
     configs::TalonFXConfiguration configs{};
 
     // @todo Find out if this is a good stator current limit. It may need to be higher or lower depending on testing.
-    configs.CurrentLimits.StatorCurrentLimit = 80_A;
+    configs.CurrentLimits.StatorCurrentLimit = 60_A;
     configs.CurrentLimits.StatorCurrentLimitEnable = true;
 
     // @todo Find out if this is a good supply current limit. It may need to be higher or lower depending on testing.
-    configs.CurrentLimits.SupplyCurrentLimit = 50_A;
+    configs.CurrentLimits.SupplyCurrentLimit = 30_A;
     configs.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     configs.MotorOutput.NeutralMode = signals::NeutralModeValue::Brake;
     configs.MotorOutput.Inverted = signals::InvertedValue::CounterClockwise_Positive;
-
-    configs.CurrentLimits.StatorCurrentLimit = 60_A;
-    configs.CurrentLimits.StatorCurrentLimitEnable = true;
 
     configs.Slot0.kP = 0.5;
     configs.Slot0.kI = 0.0;
