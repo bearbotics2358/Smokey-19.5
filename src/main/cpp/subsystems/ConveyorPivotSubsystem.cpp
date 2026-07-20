@@ -72,7 +72,7 @@ frc2::CommandPtr ConveyorPivotSubsystem::ExtendSlow() {
 
 frc2::CommandPtr ConveyorPivotSubsystem::RetractSlow() {
     return Run([this] {
-        m_extenderMotor.SetVoltage(-0.75_V);
+        m_extenderMotor.SetVoltage(-0.5_V);
     });
 }
 
@@ -102,15 +102,7 @@ frc2::CommandPtr ConveyorPivotSubsystem::Stow() {
 
 frc2::CommandPtr ConveyorPivotSubsystem::SlowStow() {
     return Run([this] {
-        configs::MotionMagicConfigs slowConfig{};
-
-        slowConfig.MotionMagicCruiseVelocity = 4_tps;
-        slowConfig.MotionMagicAcceleration = 15_tr_per_s_sq;
-
-        m_extenderMotor.GetConfigurator().Apply(slowConfig);
-
-        static const units::turn_t kFullyRetracted = 0.0_tr;
-        m_extenderMotor.SetControl(m_ExtenderVoltage.WithPosition(kFullyRetracted).WithSlot(0));
+        m_extenderMotor.SetVoltage(-0.75_V);
     }).Until(
         [this] { return m_ExtenderHardStop.Get(); }
     ).AndThen(
@@ -120,13 +112,6 @@ frc2::CommandPtr ConveyorPivotSubsystem::SlowStow() {
 
 frc2::CommandPtr ConveyorPivotSubsystem::Stop() {
     return RunOnce([this] {
-        configs::MotionMagicConfigs normalConfig{};
-
-        normalConfig.MotionMagicCruiseVelocity = 30_tps;
-        normalConfig.MotionMagicAcceleration = 100_tr_per_s_sq;
-
-        m_extenderMotor.GetConfigurator().Apply(normalConfig);
-
         m_extenderMotor.SetControl(m_Stop);
     });
 }
