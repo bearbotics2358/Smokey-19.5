@@ -20,6 +20,7 @@ class IntakeSubsystem : public frc2::SubsystemBase {
 public:
         IntakeSubsystem();
         frc2::CommandPtr RunIntake();
+        frc2::CommandPtr RunIntakeJamProtection();
         frc2::CommandPtr RunIntakeInReverse();
         frc2::CommandPtr StopIntake();
 
@@ -35,6 +36,8 @@ private:
 
         static constexpr int kIntakeMotorID = 29;
         hardware::TalonFX m_intakeSpinMotor{kIntakeMotorID};
+
+        frc2::Trigger m_IntakeHardStop;
 
         static constexpr double kGearRatio = 1;
 

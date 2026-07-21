@@ -15,6 +15,11 @@ IntakeSubsystem::IntakeSubsystem()
 {
     ConfigureIntakeMotor();
 
+    m_IntakeHardStop = frc2::Trigger([this] {
+        return (units::math::abs(m_intakeSpinMotor.GetVelocity().GetValue()) < 1_tps &&
+            units::math::abs(m_intakeSpinMotor.GetTorqueCurrent().GetValue()) > 100_A);
+    }).Debounce(0.1_s);
+
     if (frc::RobotBase::IsSimulation()) {
         SimulationInit();
     }
@@ -61,6 +66,16 @@ frc2::CommandPtr IntakeSubsystem::RunIntake() {
     return RunOnce([this] {
         m_intakeSpinMotor.SetControl(m_IntakeVelocity.WithVelocity(2000_rpm));
     });
+}
+
+frc2::CommandPtr IntakeSubsystem::RunIntakeJamProtection() {
+    return Run([this] {
+        m_intakeSpinMotor.SetControl(m_IntakeVelocity.WithVelocity(2000_rpm));
+    }).Until(
+        [this] { return m_IntakeHardStop.Get(); }
+    ).AndThen(
+        RunIntakeInReverse().Repeatedly().Until([this] { return m_IntakeHardStop.Get() == false; })
+    ).Repeatedly();
 }
 
 frc2::CommandPtr IntakeSubsystem::RunIntakeInReverse() {
