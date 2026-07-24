@@ -71,13 +71,19 @@
   "eventMarkers": [
     {
       "name": "Extend Pivot",
-      "waypointRelativePos": 0.21492537313432847,
+      "waypointRelativePos": 0.42487046632124364,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
+      "name": "Jam Protection",
+      "waypointRelativePos": 0.4763948497854067,
+      "endWaypointRelativePos": 2.0,
+      "command": null
+    },
+    {
       "name": "Run Intake",
-      "waypointRelativePos": 0.37611940298507435,
+      "waypointRelativePos": 0.5284974093264249,
       "endWaypointRelativePos": 2.0,
       "command": null
     }

@@ -76,6 +76,12 @@
       "command": null
     },
     {
+      "name": "Jam Protection",
+      "waypointRelativePos": 1.3175965665236051,
+      "endWaypointRelativePos": 2.0,
+      "command": null
+    },
+    {
       "name": "Run Intake",
       "waypointRelativePos": 1.3432835820895512,
       "endWaypointRelativePos": 2.0,

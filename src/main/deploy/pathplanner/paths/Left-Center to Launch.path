@@ -92,6 +92,12 @@
       "command": null
     },
     {
+      "name": "Jam Protection",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.5150214592274686,
+      "command": null
+    },
+    {
       "name": "Stop Intake",
       "waypointRelativePos": 0.36716417910447763,
       "endWaypointRelativePos": null,
