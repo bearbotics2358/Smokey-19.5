@@ -228,6 +228,8 @@ void RobotContainer::ConfigureBindings()
             m_conveyorBeltSubsystem.Stop()
         )
     );
+
+    driverJoystick.POVRight().OnTrue(m_shooterSubsystem.DisableDrumAndFeeder());
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand()
@@ -280,6 +282,6 @@ void RobotContainer::ConfigurePathPlanner() {
     );
     NamedCommands::registerCommand(
         "Jam Protection",
-        std::move(m_intakeSubsystem.RunIntakeJamProtection())
+        std::move(m_intakeSubsystem.RunIntake())
     );
 }
