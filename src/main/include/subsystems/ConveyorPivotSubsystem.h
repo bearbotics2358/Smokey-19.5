@@ -28,6 +28,7 @@ public:
     frc2::CommandPtr RetractSlow();
     frc2::CommandPtr Extend();
     frc2::CommandPtr Stow();
+    frc2::CommandPtr SlowStow();
     frc2::CommandPtr Stop();
 private:
     controls::MotionMagicVoltage m_ExtenderVoltage = controls::MotionMagicVoltage(0_tr).WithSlot(0);

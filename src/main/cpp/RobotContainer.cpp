@@ -39,10 +39,10 @@ RobotContainer::RobotContainer()
     frc::SmartDashboard::PutData("Auto Mode", &m_autoChooser);
 
     // @todo Re-enable PDH logging after figuring out why it is broken
-    // m_pdh = std::make_shared<frc::PowerDistribution>(1, frc::PowerDistribution::ModuleType::kRev);
-    // BearLog::SetPdh(m_pdh);
+    m_pdh = std::make_shared<frc::PowerDistribution>(1, frc::PowerDistribution::ModuleType::kRev);
+    BearLog::SetPdh(m_pdh);
 
-    BearLog::SetOptions({BearLogOptions::NTPublish::Yes, BearLogOptions::LogWithNTPrefix::Yes, BearLogOptions::LogExtras::No});
+    BearLog::SetOptions({BearLogOptions::NTPublish::Yes, BearLogOptions::LogWithNTPrefix::Yes, BearLogOptions::LogExtras::Yes});
 
     ConfigureBindings();
 }
@@ -63,6 +63,7 @@ void RobotContainer::ConfigureBindings()
     driverJoystick.A().WhileTrue(
         frc2::cmd::Run([this] {
             if (m_driveManager.AssistManagerA() == true) {
+                m_conveyorPivotSubsystem.Extend();
                 m_drivetrain.SetControl(
                     drive.WithVelocityX(m_driveManager.xMovement * MaxSpeed) // Drive forward with negative Y (forward)
                         .WithVelocityY(m_driveManager.yMovement * MaxSpeed) // Drive left with negative X (left)
@@ -71,7 +72,7 @@ void RobotContainer::ConfigureBindings()
             }
         }));
 
-    driverJoystick.LeftBumper().WhileTrue(
+    driverJoystick.RightBumper().WhileTrue(
         frc2::cmd::Run([this] {
             if (m_driveManager.TurnToHub() == true) {
                 m_drivetrain.SetControl(
@@ -84,7 +85,7 @@ void RobotContainer::ConfigureBindings()
 
 
     //TODO: Change the keybind to something that makes sense
-    driverJoystick.POVUp().WhileTrue(
+    driverJoystick.X().WhileTrue(
         m_conveyorPivotSubsystem.Extend()
     ).OnFalse(
         m_conveyorPivotSubsystem.Stop()
@@ -93,18 +94,6 @@ void RobotContainer::ConfigureBindings()
         RetractPivotCommand()
     ).OnFalse(
         StopPivotCommand()
-    );
-
-    driverJoystick.RightBumper().WhileTrue(
-        frc2::cmd::Parallel(
-            m_shooterSubsystem.RunDrumAndFeeder(),
-            m_conveyorBeltSubsystem.RunBelt()
-        )
-    ).OnFalse(
-        frc2::cmd::Parallel(
-            m_shooterSubsystem.RunDrumSlowly(),
-            m_conveyorBeltSubsystem.Stop()
-        )
     );
 
     driverJoystick.RightTrigger().WhileTrue(
@@ -118,8 +107,8 @@ void RobotContainer::ConfigureBindings()
                     );
                 }
             }
-        ).Until([this] {return m_driveManager.SequenceTurnToHub();})
-        .WithTimeout(2_s)
+        ).Until([this] {return (m_driveManager.SequenceTurnToHub() || (RobotZoneHelper::isRobotInNeutralZone(m_drivetrain.GetState().Pose)));})
+        .WithTimeout(1_s)
         .AndThen(
             m_shooterSubsystem.RunDrumAndFeeder()
                 .AlongWith(
@@ -132,11 +121,34 @@ void RobotContainer::ConfigureBindings()
                         }
                     )
                 )
+                .AlongWith(
+                    m_conveyorPivotSubsystem.SlowStow()
+                )
+        ).Unless([this] {return RobotZoneHelper::isRobotInNeutralZone(m_drivetrain.GetState().Pose);}
+    ).AndThen(
+            m_drivetrain.ApplyRequest([this]() -> auto&& {
+                return drive.WithVelocityX(m_driveManager.xMovement * MaxSpeed)
+                            .WithVelocityY(m_driveManager.yMovement * MaxSpeed)
+                            .WithRotationalRate(m_driveManager.rotMovement * MaxAngularRate);
+            }).Until([this] {
+                return m_driveManager.SequenceTurnToAlliance() ||
+                    RobotZoneHelper::isRobotInMyAllianceZone(
+                        m_drivetrain.GetState().Pose);
+            }).OnlyIf([this] {return RobotZoneHelper::isRobotInNeutralZone(m_drivetrain.GetState().Pose);})
+        ).AndThen(
+            m_shooterSubsystem.RunDrumToFeed().AlongWith(m_drivetrain.ApplyRequest([this]() -> auto&& {
+                return drive.WithVelocityX(-driverJoystick.GetLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .WithVelocityY(-driverJoystick.GetLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .WithRotationalRate(-driverJoystick.GetRightX() * MaxAngularRate); // Drive counterclockwise with negative X (left)
+            })).AlongWith(
+                    m_conveyorPivotSubsystem.SlowStow()
+                ).OnlyIf([this] {return RobotZoneHelper::isRobotInNeutralZone(m_drivetrain.GetState().Pose);})
         )
     ).OnFalse(
         frc2::cmd::Parallel(
             m_shooterSubsystem.RunDrumSlowly(),
-            m_conveyorBeltSubsystem.Stop()
+            m_conveyorBeltSubsystem.Stop(),
+            m_conveyorPivotSubsystem.Stop()
         )
     );
 
@@ -148,19 +160,21 @@ void RobotContainer::ConfigureBindings()
         }).IgnoringDisable(true)
     );
 
-    driverJoystick.X().WhileTrue(m_drivetrain.ApplyRequest([this]() -> auto&& { return brake; }));
-    driverJoystick.Y().OnTrue(m_intakeSubsystem.RunIntakeInReverse());
-    driverJoystick.Y().OnFalse(m_intakeSubsystem.StopIntake());
+    driverJoystick.POVUp().WhileTrue(m_drivetrain.ApplyRequest([this]() -> auto&& { return brake; }));
+    driverJoystick.LeftBumper().OnTrue(m_intakeSubsystem.RunIntakeInReverse());
+    driverJoystick.LeftBumper().OnFalse(m_intakeSubsystem.StopIntake());
 
     driverJoystick.LeftTrigger().OnTrue(
         frc2::cmd::Parallel(
             m_intakeSubsystem.RunIntake(),
-            m_conveyorBeltSubsystem.RunBelt()
+            m_conveyorBeltSubsystem.RunBelt(),
+            m_conveyorPivotSubsystem.Extend()
         )
     ).OnFalse(
         frc2::cmd::Parallel(
             m_intakeSubsystem.StopIntake(),
-            m_conveyorBeltSubsystem.Stop()
+            m_conveyorBeltSubsystem.Stop(),
+            m_conveyorPivotSubsystem.Stop()
         )
     );
 
@@ -200,11 +214,20 @@ void RobotContainer::ConfigureBindings()
 
     m_drivetrain.RegisterTelemetry([this](auto const &state) { logger.Telemeterize(state); });
 
-    operatorJoystick.POVUp().WhileTrue(m_FMSSubsystem.ManualShift("Red"));
-    operatorJoystick.POVDown().WhileTrue(m_FMSSubsystem.ManualShift("Blue"));
+    operatorJoystick.POVUp().OnTrue(m_shooterSubsystem.IncreaseDrumRPM());
+    operatorJoystick.POVDown().OnTrue(m_shooterSubsystem.DecreaseDrumRPM());
 
-    driverJoystick.POVLeft().WhileTrue(m_driveManager.DriveAlongWall());
-    driverJoystick.POVRight().OnTrue(m_shooterSubsystem.DisableDrumAndFeeder());
+    operatorJoystick.RightBumper().WhileTrue(
+        frc2::cmd::Parallel(
+            m_shooterSubsystem.RunDrumAndFeeder(),
+            m_conveyorBeltSubsystem.RunBelt()
+        )
+    ).OnFalse(
+        frc2::cmd::Parallel(
+            m_shooterSubsystem.RunDrumSlowly(),
+            m_conveyorBeltSubsystem.Stop()
+        )
+    );
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand()
@@ -237,7 +260,7 @@ void RobotContainer::ConfigurePathPlanner() {
     );
     NamedCommands::registerCommand(
         "Standby",
-        std::move(m_shooterSubsystem.RunDrumSlowly())
+        std::move(m_shooterSubsystem.RunDrumSlowly().AlongWith(m_conveyorBeltSubsystem.Stop()))
     );
     NamedCommands::registerCommand(
         "Extend Pivot",
