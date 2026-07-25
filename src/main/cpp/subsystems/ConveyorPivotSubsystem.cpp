@@ -102,7 +102,7 @@ frc2::CommandPtr ConveyorPivotSubsystem::Stow() {
 
 frc2::CommandPtr ConveyorPivotSubsystem::SlowStow() {
     return Run([this] {
-        m_extenderMotor.SetVoltage(-0.75_V);
+        m_extenderMotor.SetVoltage(-1.25_V);
     }).Until(
         [this] { return m_ExtenderHardStop.Get(); }
     ).AndThen(
