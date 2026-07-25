@@ -166,7 +166,7 @@ void RobotContainer::ConfigureBindings()
 
     driverJoystick.LeftTrigger().OnTrue(
         frc2::cmd::Parallel(
-            m_intakeSubsystem.RunIntake(),
+            m_intakeSubsystem.RunIntakeJamProtection(),
             m_conveyorBeltSubsystem.RunBelt(),
             m_conveyorPivotSubsystem.Extend()
         )
