@@ -36,7 +36,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Right-Trench to Center"
+                  "pathName": "Start-Neutral-Shoot"
                 }
               },
               {
@@ -49,12 +49,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Right-Center to Launch"
-          }
-        },
-        {
           "type": "sequential",
           "data": {
             "commands": [
@@ -106,46 +100,54 @@
           }
         },
         {
-          "type": "race",
+          "type": "sequential",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "race",
                 "data": {
-                  "name": "Extend Pivot"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.5
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Extend Pivot"
+                      }
+                    }
+                  ]
                 }
               },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Right-Shoot-Outpost"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 2.0
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Right-Outpost-Shoot"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Run Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Right-Launch to Close To Hub"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Right-Hub to Center"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Right-Center to Launch"
           }
         },
         {
@@ -197,12 +199,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Right-Launch to Close To Hub"
           }
         }
       ]

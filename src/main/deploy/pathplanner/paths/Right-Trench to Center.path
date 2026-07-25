@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.412100694444445,
-        "y": 0.6022569444444446
+        "x": 3.671808019950565,
+        "y": 0.6484120100635595
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.196641835875892,
-        "y": 0.6179788279459328
+        "x": 4.456349161382012,
+        "y": 0.6641338935650478
       },
       "isLocked": false,
       "linkedName": "Under Right Trench"
@@ -68,20 +68,7 @@
       "name": "Point Towards Zone"
     }
   ],
-  "eventMarkers": [
-    {
-      "name": "Extend Pivot",
-      "waypointRelativePos": 0.4238805970149257,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "Run Intake",
-      "waypointRelativePos": 0.5074626865671644,
-      "endWaypointRelativePos": 2.0,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -91,7 +78,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.0,
+    "velocity": 0.0,
     "rotation": -72.73817962838727
   },
   "reversed": false,

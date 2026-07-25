@@ -228,6 +228,8 @@ void RobotContainer::ConfigureBindings()
             m_conveyorBeltSubsystem.Stop()
         )
     );
+
+    driverJoystick.POVRight().OnTrue(m_shooterSubsystem.DisableDrumAndFeeder());
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand()
