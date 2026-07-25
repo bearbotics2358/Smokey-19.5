@@ -28,12 +28,13 @@ public:
     bool AngleBump();
     bool TurnToHub();
     bool SequenceTurnToHub();
-
+    bool SequenceTurnToAlliance();
+    
     frc2::CommandPtr DriveAlongWall();
 private:
     frc::Pose2d blueHubPose = frc::Pose2d(4.625594_m, 4.034663_m, frc::Rotation2d{});
     frc::Pose2d redHubPose = frc::Pose2d(11.915394_m, 4.034663_m, frc::Rotation2d{});
-    
+
     frc2::CommandXboxController m_driverController{0};
 
     std::function<frc::Pose2d()> m_GetCurrentBotPose;
@@ -41,8 +42,8 @@ private:
     static constexpr double kP = 1.75;
     static constexpr double kI = 0.0;
     static constexpr double kD = 0.0;
-    
-    
+
+
     frc::PIDController m_YAlignmentPID {kP, kI, kD};
 
     static constexpr double kRotationP = 0.05;
@@ -54,7 +55,7 @@ private:
     static constexpr units::radians_per_second_t kMaxAngularVelocity = 2_rad_per_s;
 
     const units::meter_t kStrafeTolerance = units::meter_t(0.5_in);
-    const units::degree_t kRotationTolerance = 2_deg;
+    const units::degree_t kRotationTolerance = 5_deg;
 
     const units::meter_t kLeftSetpointDistance = units::meter_t(296.47_in);
     const units::meter_t kRightSetpointDistance = units::meter_t(21.22_in);
