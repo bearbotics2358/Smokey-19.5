@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.191458333333332,
-        "y": 7.389010416666666
+        "x": 6.342071545562334,
+        "y": 7.200966476293105
       },
       "isLocked": false,
       "linkedName": "Under Left Trench"
     },
     {
       "anchor": {
-        "x": 6.99453125,
-        "y": 6.743402777777778
+        "x": 7.429002347417842,
+        "y": 6.856068075117371
       },
       "prevControl": {
-        "x": 6.505111560997727,
-        "y": 7.232822466780052
+        "x": 7.018194701116522,
+        "y": 7.33981983624658
       },
       "nextControl": {
-        "x": 7.655885416666667,
-        "y": 6.0820486111111105
+        "x": 7.9380906641583815,
+        "y": 6.256584662355124
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 4.8942229729729725
       },
       "prevControl": {
-        "x": 7.5725243993993985,
-        "y": 5.996479917417416
+        "x": 7.450073094297282,
+        "y": 5.385513239517464
       },
       "nextControl": null,
       "isLocked": false,
@@ -71,13 +71,19 @@
   "eventMarkers": [
     {
       "name": "Extend Pivot",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0.42487046632124364,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "Jam Protection",
+      "waypointRelativePos": 0.4763948497854067,
       "endWaypointRelativePos": 2.0,
       "command": null
     },
     {
       "name": "Run Intake",
-      "waypointRelativePos": 0.37611940298507435,
+      "waypointRelativePos": 0.5284974093264249,
       "endWaypointRelativePos": 2.0,
       "command": null
     }

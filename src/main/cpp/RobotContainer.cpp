@@ -278,4 +278,8 @@ void RobotContainer::ConfigurePathPlanner() {
         "Stop Intake",
         std::move(m_intakeSubsystem.StopIntake())
     );
+    NamedCommands::registerCommand(
+        "Jam Protection",
+        std::move(m_intakeSubsystem.RunIntakeJamProtection())
+    );
 }

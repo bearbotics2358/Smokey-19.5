@@ -42,6 +42,12 @@
       "waypointRelativePos": 0,
       "endWaypointRelativePos": 1.0,
       "command": null
+    },
+    {
+      "name": "Jam Protection",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 1.0,
+      "command": null
     }
   ],
   "globalConstraints": {
