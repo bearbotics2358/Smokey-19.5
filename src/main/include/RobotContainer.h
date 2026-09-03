@@ -29,6 +29,7 @@ private:
     double speedlimit = 1.0;
     units::meters_per_second_t MaxSpeed = speedlimit * TunerConstants::GetSpeedAt12Volts(m_RobotType); // kSpeedAt12Volts desired top speed
     units::radians_per_second_t MaxAngularRate = speedlimit * 0.75_tps; // 3/4 of a rotation per second max angular velocity
+    double speedLimit = 0.2;
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     swerve::requests::FieldCentric drive = swerve::requests::FieldCentric{}
