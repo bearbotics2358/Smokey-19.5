@@ -67,4 +67,6 @@ private:
 
     frc2::CommandPtr RetractPivotCommand();
     frc2::CommandPtr StopPivotCommand();
+
+    frc2::CommandPtr DriveToShoot();
 };

@@ -178,6 +178,10 @@ void RobotContainer::ConfigureBindings()
         )
     );
 
+    driverJoystick.Y().WhileTrue(
+        DriveToShoot()
+    );
+
     operatorJoystick.X().OnTrue(
         m_conveyorPivotSubsystem.Extend()
     ).OnFalse(
@@ -279,5 +283,63 @@ void RobotContainer::ConfigurePathPlanner() {
     NamedCommands::registerCommand(
         "Stop Intake",
         std::move(m_intakeSubsystem.StopIntake())
+    );
+
+    pathplanner::RobotConfig config = pathplanner::RobotConfig::fromGUISettings();
+
+    pathplanner::AutoBuilder::configure(
+        [this]() { return m_drivetrain.GetState().Pose; },
+        [this](frc::Pose2d pose) { m_drivetrain.ResetPose(pose); },
+        [this]() { return m_drivetrain.GetState().Speeds; },
+        [this](frc::ChassisSpeeds speeds) {
+            m_drivetrain.SetControl(
+                drive.WithVelocityX(speeds.vx)
+                    .WithVelocityY(speeds.vy)
+                    .WithRotationalRate(speeds.omega)
+            );
+        },
+
+        std::make_shared<pathplanner::PPHolonomicDriveController>(
+            pathplanner::PIDConstants(5.0, 0.0, 0.0),
+            pathplanner::PIDConstants(5.0, 0.0, 0.0)
+        ),
+
+        config,
+        []() { return true; },
+        &m_drivetrain
+    );
+}
+
+frc2::CommandPtr RobotContainer::DriveToShoot() {
+    frc::Pose2d target2{75_in, units::inch_t(317.69 / 2), frc::Rotation2d(0_deg)};
+    frc::Pose2d target1{651.22_in - 75_in, units::inch_t(317.69 / 2), frc::Rotation2d(180_deg)};
+
+    // frc::Translation2d fieldCenter{325.61_in, 158.84_in};
+
+    // if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
+    //     target1 = target1.RotateAround(fieldCenter, frc::Rotation2d(180_deg));
+    // }
+
+    auto normalConstraints = pathplanner::PathConstraints(
+        3.0_mps, 3.0_mps_sq,
+        540_deg_per_s, 720_deg_per_s_sq
+    );
+
+    return frc2::cmd::Sequence(
+        pathplanner::AutoBuilder::pathfindToPose(target1, normalConstraints, 0_mps),
+        m_shooterSubsystem.RunDrumAndFeeder()
+            .AlongWith(
+                m_conveyorBeltSubsystem.RunBelt()
+            )
+            .AlongWith(
+                m_drivetrain.ApplyRequest(
+                    [this]() -> auto&& {
+                        return brake;
+                    }
+                )
+            )
+            .AlongWith(
+                m_conveyorPivotSubsystem.SlowStow()
+            )
     );
 }
