@@ -5,6 +5,25 @@
     "data": {
       "commands": [
         {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Extend Pivot"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.5
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Left-Trench to Center"
@@ -33,7 +52,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 5.0
+                        "waitTime": 1.5
                       }
                     }
                   ]
@@ -58,10 +77,29 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 5.0
+                        "waitTime": 1.5
                       }
                     }
                   ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Extend Pivot"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.5
                 }
               }
             ]
@@ -109,12 +147,6 @@
                 }
               },
               {
-                "type": "named",
-                "data": {
-                  "name": "Retract Pivot"
-                }
-              },
-              {
                 "type": "race",
                 "data": {
                   "commands": [
@@ -122,6 +154,12 @@
                       "type": "named",
                       "data": {
                         "name": "Launch"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Retract Pivot"
                       }
                     },
                     {
