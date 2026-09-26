@@ -59,7 +59,7 @@ frc2::CommandPtr IntakeSubsystem::TestIntake() {
 
 frc2::CommandPtr IntakeSubsystem::RunIntake() {
     return RunOnce([this] {
-        m_intakeSpinMotor.SetControl(m_IntakeVelocity.WithVelocity(2000_rpm));
+        m_intakeSpinMotor.SetControl(m_IntakeVelocity.WithVelocity(2500_rpm));
     });
 }
 
