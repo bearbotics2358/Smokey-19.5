@@ -19,7 +19,8 @@
 #include "subsystems/RobotZoneHelper.h"
 
 RobotContainer::RobotContainer()
-    : m_driveManager{[this] { return m_drivetrain.GetState().Pose; }}
+    : m_driveManager{[this] { return m_drivetrain.GetState().Pose; },
+                     [this] { return m_drivetrain.GetState().Speeds.omega; }}
 {
     // The LaunchHelper needs to be initialized when the robot code is booting up before any other calls to
     // LaunchHelper are made

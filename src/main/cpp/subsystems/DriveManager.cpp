@@ -5,9 +5,13 @@
 #include <pathplanner/lib/auto/NamedCommands.h>
 #include <pathplanner/lib/path/PathConstraints.h>
 #include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
+#include <cmath>
+#include <frc/Timer.h>
 
-DriveManager::DriveManager(std::function<frc::Pose2d()> getBotPose) :
-    m_GetCurrentBotPose(getBotPose)
+DriveManager::DriveManager(std::function<frc::Pose2d()> getBotPose,
+                           std::function<units::radians_per_second_t()> getAngularVelocity) :
+    m_GetCurrentBotPose(getBotPose),
+    m_GetCurrentAngularVelocity(getAngularVelocity)
 {
     m_SetpointDistance = kLeftSetpointDistance;
     m_rotationalPID.EnableContinuousInput(-180, 180);
@@ -161,6 +165,23 @@ bool DriveManager::TurnToHub() {
 bool DriveManager::SequenceTurnToHub() {
 
     frc::Pose2d botPose = m_GetCurrentBotPose();
+    units::radians_per_second_t currentAngularVelocity = m_GetCurrentAngularVelocity();
+    units::second_t currentTimestamp = frc::Timer::GetFPGATimestamp();
+    if (m_HasPreviousAngularVelocity) {
+        units::second_t elapsed = currentTimestamp - m_PreviousAngularVelocityTimestamp;
+        if (elapsed >= 5_ms && elapsed <= 250_ms) {
+            units::radians_per_second_squared_t angularAcceleration =
+                (currentAngularVelocity - m_PreviousAngularVelocity) / elapsed;
+            if (currentAngularVelocity.value() * angularAcceleration.value() < 0.0) {
+                double observedDeceleration = std::clamp(std::abs(angularAcceleration.value()), 0.25, 20.0);
+                m_breakingDeceleration = units::radians_per_second_squared_t(
+                    0.8 * m_breakingDeceleration.value() + 0.2 * observedDeceleration);
+            }
+        }
+    }
+    m_PreviousAngularVelocity = currentAngularVelocity;
+    m_PreviousAngularVelocityTimestamp = currentTimestamp;
+    m_HasPreviousAngularVelocity = true;
     frc::DriverStation::Alliance currentAlliance = frc::DriverStation::GetAlliance().value_or(frc::DriverStation::Alliance::kBlue);
 
     frc::Pose2d HubPose;
@@ -213,7 +234,25 @@ bool DriveManager::SequenceTurnToHub() {
     yMovement = -m_driverController.GetLeftX();
     rotMovement = rotation;
 
-    if ((abs(currentDegrees.value() - angleToHub.value()) < kRotationTolerance.value())) {
+    units::radian_t brakingTolerance =
+        units::radian_t(currentAngularVelocity.value() * kResponseDelay.value()) +
+        units::radian_t(currentAngularVelocity.value() * std::abs(currentAngularVelocity.value()) /
+                        (2.0 * std::abs(m_breakingDeceleration.value())));
+    units::degree_t angularTolerance = angleToHub - units::degree_t(brakingTolerance);
+    while (angularTolerance.value() > 180) {
+        angularTolerance -= 360_deg;
+    }
+    while (angularTolerance.value() < -180) {
+        angularTolerance += 360_deg;
+    }
+    double stoppingAngleError = currentDegrees.value() - angularTolerance.value();
+    while (stoppingAngleError > 180) {
+        stoppingAngleError -= 360;
+    }
+    while (stoppingAngleError < -180) {
+        stoppingAngleError += 360;
+    }
+    if (std::abs(stoppingAngleError) < kRotationTolerance.value()) {
         return true;
     } else {
         return false;

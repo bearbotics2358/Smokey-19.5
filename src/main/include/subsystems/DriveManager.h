@@ -16,7 +16,8 @@
 
 class DriveManager : public frc2::SubsystemBase {
 public:
-    DriveManager(std::function<frc::Pose2d()> getBotPose);
+    DriveManager(std::function<frc::Pose2d()> getBotPose,
+                 std::function<units::radians_per_second_t()> getAngularVelocity);
 
     double xMovement = -m_driverController.GetLeftY();
     double yMovement = -m_driverController.GetLeftX();
@@ -38,6 +39,10 @@ private:
     frc2::CommandXboxController m_driverController{0};
 
     std::function<frc::Pose2d()> m_GetCurrentBotPose;
+    std::function<units::radians_per_second_t()> m_GetCurrentAngularVelocity;
+    units::radians_per_second_t m_PreviousAngularVelocity{0.0};
+    units::second_t m_PreviousAngularVelocityTimestamp{0.0};
+    bool m_HasPreviousAngularVelocity = false;
 
     static constexpr double kP = 1.75;
     static constexpr double kI = 0.0;
@@ -60,4 +65,8 @@ private:
     const units::meter_t kLeftSetpointDistance = units::meter_t(296.47_in);
     const units::meter_t kRightSetpointDistance = units::meter_t(21.22_in);
     units::meter_t m_SetpointDistance;
+
+    units::second_t kResponseDelay = 0.05_s;
+    units::radians_per_second_squared_t kAdjustmentInterval = 0.5_rad_per_s_sq;
+    units::radians_per_second_squared_t m_breakingDeceleration = 5_rad_per_s_sq;
 };
