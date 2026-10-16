@@ -15,6 +15,7 @@ DriveManager::DriveManager(std::function<frc::Pose2d()> getBotPose,
 {
     m_SetpointDistance = kLeftSetpointDistance;
     m_rotationalPID.EnableContinuousInput(-180, 180);
+    m_breakingDeceleration = units::radians_per_second_squared_t(kGravity.value() * kFrictionCoefficient);
 }
 
 bool DriveManager::AssistManagerA() {

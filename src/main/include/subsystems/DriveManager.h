@@ -66,7 +66,9 @@ private:
     const units::meter_t kRightSetpointDistance = units::meter_t(21.22_in);
     units::meter_t m_SetpointDistance;
 
-    units::second_t kResponseDelay = 0.05_s;
-    units::radians_per_second_squared_t kAdjustmentInterval = 0.5_rad_per_s_sq;
-    units::radians_per_second_squared_t m_breakingDeceleration = 5_rad_per_s_sq;
+    double kFrictionCoefficient = 0.9;
+    units::second_t kResponseDelay = 0.02_s;
+    units::mass::kilogram_t kRobotWeight = 140_kg;
+    units::meters_per_second_squared_t kGravity = 9.8_mps_sq;
+    units::radians_per_second_squared_t m_breakingDeceleration;
 };
